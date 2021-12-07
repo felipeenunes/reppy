@@ -19,4 +19,4 @@ class User(db.Model):
     college = db.Column(db.String, nullable=False)
     phone_number = db.Column(db.String, nullable=False)
     password = db.Column(db.String, nullable=False)
-    state_id = db.Column(db.Integer, db.ForeignKey("republics.id"))
+    state_id = db.Column(db.Integer, db.ForeignKey("state.id"))

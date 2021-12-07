@@ -16,4 +16,4 @@ class AdressModel(db.Model):
     street = db.Column(db.String(255), nullable=False)
     street_number = db.Column(db.String(5), nullable=False)
     zip_code = db.Column(db.String(8))
-    # uf_id = db.Column(db.Integer, db.ForeignKey('state.id'))
+    uf_id = db.Column(db.Integer, db.ForeignKey('state.id'))

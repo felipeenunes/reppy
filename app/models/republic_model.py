@@ -27,3 +27,4 @@ class RepublicModel(db.Model):
     student_cpf = db.Column(db.String, db.ForeignKey(user.cpf))
     address_id = db.Column(db.Integer, db.ForeignKey(address.id))
     extras_id = db.Column(db.Integer, db.ForeignKey(extras.id))
+    

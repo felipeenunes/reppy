@@ -1,6 +1,4 @@
-from sqlalchemy.sql.expression import update
 from app.configs.database import db
-from app.models.user_model import UserModel
 from dataclasses import dataclass
 
 @dataclass

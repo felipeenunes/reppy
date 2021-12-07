@@ -2,7 +2,7 @@ from dataclasses import dataclass
 from app.configs.database import db
 
 @dataclass
-class State(db.Model):
+class StateModel(db.Model):
 
     id: int
     uf: str

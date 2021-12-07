@@ -2,7 +2,7 @@ from dataclasses import dataclass
 from app.configs.database import db
 
 @dataclass
-class User(db.Model):
+class UserModel(db.Model):
 
     cpf:str
     name:str

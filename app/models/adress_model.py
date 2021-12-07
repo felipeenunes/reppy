@@ -8,6 +8,9 @@ class Adress(db.Model):
     street_number: str
     zip_code: str
     uf_id: int
+
+    __tablename__ = 'adress'
+    
     id: db.Column(db.Integer, primaryKey=True)
     city = db.Column(db.String(50), nullable=False)
     street = db.Column(db.String(255), nullable=False)

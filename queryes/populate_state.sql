@@ -1,4 +1,4 @@
-INSERT INTO state
+INSERT INTO states
         (UF)
     VALUE
 

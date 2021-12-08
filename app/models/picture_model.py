@@ -11,5 +11,5 @@ class PictureModel(db.Model):
     __tablename__ = 'pictures'
 
     id = db.Column(db.Integer, primary_key = True)
-    picture_url = db.Column(db.String, nullable = False, unique=True)
+    picture_url = db.Column(db.String, nullable = False)
     rep_id = db.Column(db.Integer, db.ForeignKey('republics.id'))

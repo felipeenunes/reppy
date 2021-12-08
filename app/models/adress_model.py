@@ -11,7 +11,7 @@ class AdressModel(db.Model):
 
     __tablename__ = 'adress'
     
-    id: db.Column(db.Integer, primaryKey=True)
+    id: db.Column(db.Integer, primary_key=True)
     city = db.Column(db.String(50), nullable=False)
     street = db.Column(db.String(255), nullable=False)
     street_number = db.Column(db.String(5), nullable=False)

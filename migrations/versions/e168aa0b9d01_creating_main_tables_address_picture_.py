@@ -1,8 +1,8 @@
 """ Creating main tables: address, picture, republic, state, user
 
-Revision ID: e05aede23ea8
+Revision ID: e168aa0b9d01
 Revises: 
-Create Date: 2021-12-08 13:56:39.633269
+Create Date: 2021-12-08 19:02:25.142556
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = 'e05aede23ea8'
+revision = 'e168aa0b9d01'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -40,8 +40,8 @@ def upgrade():
     sa.Column('college', sa.String(), nullable=False),
     sa.Column('phone_number', sa.String(), nullable=False),
     sa.Column('password', sa.String(), nullable=False),
-    sa.Column('adress_id', sa.Integer(), nullable=True),
-    sa.ForeignKeyConstraint(['adress_id'], ['addresses.id'], ),
+    sa.Column('address_id', sa.Integer(), nullable=True),
+    sa.ForeignKeyConstraint(['address_id'], ['addresses.id'], ),
     sa.PrimaryKeyConstraint('cpf'),
     sa.UniqueConstraint('email'),
     sa.UniqueConstraint('name')
@@ -55,10 +55,10 @@ def upgrade():
     sa.Column('price', sa.Float(), nullable=False),
     sa.Column('created_at', sa.DateTime(), nullable=True),
     sa.Column('updated_at', sa.DateTime(), nullable=True),
-    sa.Column('student_cpf', sa.String(), nullable=True),
+    sa.Column('user_cpf', sa.String(), nullable=True),
     sa.Column('address_id', sa.Integer(), nullable=True),
     sa.ForeignKeyConstraint(['address_id'], ['addresses.id'], ),
-    sa.ForeignKeyConstraint(['student_cpf'], ['users.cpf'], ),
+    sa.ForeignKeyConstraint(['user_cpf'], ['users.cpf'], ),
     sa.PrimaryKeyConstraint('id')
     )
     op.create_table('pictures',
@@ -66,8 +66,7 @@ def upgrade():
     sa.Column('picture_url', sa.String(), nullable=False),
     sa.Column('rep_id', sa.Integer(), nullable=True),
     sa.ForeignKeyConstraint(['rep_id'], ['republics.id'], ),
-    sa.PrimaryKeyConstraint('id'),
-    sa.UniqueConstraint('picture_url')
+    sa.PrimaryKeyConstraint('id')
     )
     # ### end Alembic commands ###
 

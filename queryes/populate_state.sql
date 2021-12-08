@@ -28,4 +28,4 @@ INSERT INTO state
     ('SC')
     ('SP')
     ('SE')
-    ('TO')
+    ('TO');

@@ -9,5 +9,5 @@ class StateModel(db.Model):
 
     __tablename__ = "state"
 
-    id: db.Column(db.Integer, primary_key=True)
-    uf: db.Column(db.String(2), nullable=False)
+    id = db.Column(db.Integer, primary_key=True)
+    uf = db.Column(db.String(2), nullable=False)

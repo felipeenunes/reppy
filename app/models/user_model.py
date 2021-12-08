@@ -1,5 +1,6 @@
 from dataclasses import dataclass
 from app.configs.database import db
+from sqlalchemy.orm import validates
 
 @dataclass
 class UserModel(db.Model):
@@ -19,4 +20,10 @@ class UserModel(db.Model):
     college = db.Column(db.String, nullable=False)
     phone_number = db.Column(db.String, nullable=False)
     password = db.Column(db.String, nullable=False)
-    adress_id = db.Column(db.Integer, db.ForeignKey("addresses.id"))
+    address_id = db.Column(db.Integer, db.ForeignKey("addresses.id"))
+
+    @validates('cpf')
+    def validate_cpf(self,_,cpf):
+        if len(cpf) != 11 or not cpf.isnumeric():
+            raise ValueError
+        return cpf

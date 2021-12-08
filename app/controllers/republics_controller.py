@@ -34,9 +34,8 @@ def create_republic():
         "price": republic.price,
         "created_at": republic.created_at,
         "update_at": republic.updated_at,
-        "address_id": republic.address_id
+        "address_id": republic.address_id,
         "pictures": pictures_list,
-
     })
 
 def update_republic():
@@ -47,6 +46,8 @@ def get_all_republics():
     republics = RepublicModel.query.all()
     return jsonify(republics)
 
+def get_one(id: int):
+    ...
 
 def delete_republic():
     ...

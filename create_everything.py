@@ -3,7 +3,7 @@ import os
 from psycopg2.extensions import ISOLATION_LEVEL_AUTOCOMMIT
 
 conn = psycopg2.connect(user="user", password="1234", host="localhost", port="5432")
-conn.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT);
+conn.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
 cursor = conn.cursor()
 
 cursor.execute("DROP DATABASE IF EXISTS reppy;")

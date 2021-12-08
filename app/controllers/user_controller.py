@@ -1,16 +1,21 @@
 from flask import jsonify, request, current_app
-from app.models.adress_model import AdressModel
 from app.models.user_model import UserModel
-from app.models.state_model import StateModel
+from app.controllers.address_controller import create_address
 
 def create_user():
     data = request.get_json()
-    data_adress = {key:value for key,value in data.items() if key == "adress"}
-    del data['adress']
-   # data['address_id'] = 
+
+    data_address = data.pop("address")
+   
+    
+    data['address_id'] = create_address(data_address)
+    print(data)
+
     user = UserModel(**data)
     current_app.db.session.add(user)
     current_app.db.session.commit()
+    
+    return jsonify(user), 201
 
 
 

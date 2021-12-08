@@ -4,14 +4,16 @@ from flask.json import jsonify
 from app.models.republic_model import RepublicModel
 from app.models.picture_model import PictureModel
 from app.configs.database import db
+from app.controllers.address_controller import create_address
 
 def create_republic():
     session = current_app.db.session
     data = request.get_json()
     pictures = data.pop('pictures')
+    address = data.pop('address')
+    data['address_id'] = create_address(address)
     data['created_at'] = datetime.now()
     data['updated_at'] = datetime.now()
-
     republic = RepublicModel(**data)
     session.add(republic)
     session.flush()
@@ -27,16 +29,15 @@ def create_republic():
         "id": republic.id,
         "name": republic.name,
         "description": republic.description,
-        "price": republic.price,
-        "vacancies_qty": republic.vancancies_qty,
+        "vacancies_qty": republic.vacancies_qty,
         "max_occupancy": republic.max_occupancy,
+        "price": republic.price,
         "created_at": republic.created_at,
-        "updated_at": republic.updated_at,
+        "update_at": republic.updated_at,
+        "address_id": republic.address_id
         "pictures": pictures_list,
+
     })
-
-
-
 
 def update_republic():
     ...

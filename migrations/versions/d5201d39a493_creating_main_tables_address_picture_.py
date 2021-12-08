@@ -1,8 +1,8 @@
-"""Creating main tables: address, picture, republic, state, user
+""" Creating main tables: address, picture, republic, state, user
 
-Revision ID: e488499dabf7
+Revision ID: d5201d39a493
 Revises: 
-Create Date: 2021-12-08 10:14:58.822237
+Create Date: 2021-12-08 11:06:05.201251
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = 'e488499dabf7'
+revision = 'd5201d39a493'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -50,7 +50,7 @@ def upgrade():
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('name', sa.String(length=150), nullable=False),
     sa.Column('description', sa.String(), nullable=True),
-    sa.Column('vancancies_qty', sa.Integer(), nullable=False),
+    sa.Column('vacancies_qty', sa.Integer(), nullable=False),
     sa.Column('max_occupancy', sa.Integer(), nullable=False),
     sa.Column('price', sa.Float(), nullable=False),
     sa.Column('created_at', sa.DateTime(), nullable=True),

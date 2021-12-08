@@ -12,4 +12,4 @@ class PictureModel(db.Model):
 
     id = db.Column(db.Integer, primary_key = True)
     picture_url = db.Column(db.String, nullable = False, unique=True)
-    rep_id = db.Column(db.Integer, db.ForeingKey('republic.id'))
+    rep_id = db.Column(db.Integer, db.ForeignKey('republics.id'))

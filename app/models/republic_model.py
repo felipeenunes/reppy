@@ -24,6 +24,6 @@ class RepublicModel(db.Model):
     created_at = db.Column(db.DateTime)
     updated_at = db.Column(db.DateTime)
     
-    student_cpf = db.Column(db.String, db.ForeignKey('users.cpf'))
+    user_cpf = db.Column(db.String, db.ForeignKey('users.cpf'))
     address_id = db.Column(db.Integer, db.ForeignKey('addresses.id'))
     

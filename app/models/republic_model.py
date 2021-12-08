@@ -7,7 +7,7 @@ class RepublicModel(db.Model):
     id: int
     name: str
     description: str
-    vacancies_qty: int
+    vancancies_qty: int
     max_occupancy: int
     price: float
     created_at: db.DateTime
@@ -18,7 +18,7 @@ class RepublicModel(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(150), nullable=False)
     description = db.Column(db.String, default='')
-    vacancies_qty = db.Column(db.Integer, nullable=False)
+    vancancies_qty = db.Column(db.Integer, nullable=False)
     max_occupancy = db.Column(db.Integer, nullable=False)
     price = db.Column(db.Float, nullable=False)
     created_at = db.Column(db.DateTime)

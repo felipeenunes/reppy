@@ -11,7 +11,7 @@ class UserModel(db.Model):
     phone_number:str
     password:str
 
-    __tablename__ = 'user'
+    __tablename__ = 'users'
 
     cpf = db.Column(db.String, primary_key=True)
     name = db.Column(db.String, nullable=False, unique=True)
@@ -19,4 +19,4 @@ class UserModel(db.Model):
     college = db.Column(db.String, nullable=False)
     phone_number = db.Column(db.String, nullable=False)
     password = db.Column(db.String, nullable=False)
-    adress_id = db.Column(db.Integer, db.ForeignKey("adress.id"))
+    adress_id = db.Column(db.Integer, db.ForeignKey("addresses.id"))

@@ -2,15 +2,19 @@ from flask import request
 from flask.json import jsonify
 from app.models.republic_model import RepublicModel
 from app.configs.database import db
+from app.controllers.address_controller import create_address
+
+session = db.session
 
 def create_republic():
-    data = request.get_json()
-    
-    republic = RepublicModel(**data)
-    db.session.add(republic)
-    db.session.commit()
+    republic_data = request.get_json()
+    address_data = republic_data.pop("address")
 
-
+    republic_data["address_id"] = create_address(address_data)
+    republic = RepublicModel(**republic_data)
+    session.add(republic)
+    session.commit()
+    return jsonify(republic)
 
 
 def update_republic():

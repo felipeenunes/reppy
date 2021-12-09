@@ -6,7 +6,10 @@ conn = psycopg2.connect(user="gustavo", password="1234", host="localhost", port=
 conn.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
 cursor = conn.cursor()
 
-
+cursor.execute("DROP DATABASE IF EXISTS reppy;")
+cursor.execute("CREATE DATABASE reppy;")
+cursor.close()
+conn.close()
 conn = psycopg2.connect(database="reppy", user="gustavo", password="1234", host="localhost", port="5432")
 os.system("flask db upgrade")
 cursor = conn.cursor()

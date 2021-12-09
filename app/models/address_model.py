@@ -1,7 +1,6 @@
 from dataclasses import dataclass
 from app.configs.database import db
 from sqlalchemy.orm import backref
-from app.models.state_model import StateModel
 
 @dataclass
 class AddressModel(db.Model):

@@ -2,7 +2,7 @@ from dataclasses import dataclass
 from app.configs.database import db
 from sqlalchemy.orm import validates
 import re
-from app.exc.exc import PhoneError
+from app.exc.exc import PhoneError,EmailErro
 from werkzeug.security import generate_password_hash,check_password_hash
 from sqlalchemy.orm import backref
 
@@ -39,7 +39,15 @@ class UserModel(db.Model):
         if not match:
             raise PhoneError("Incorrect, correct phone format:(xx)xxxxx-xxxx!")
         return phone
-    
+
+    @validates('email')
+    def validates_email(self,_,email):
+        regex = r"^[\w-]+@[a-z\d]+\.[\w]{3}"
+        match = re.fullmatch(regex,email)
+        if not match:
+            raise EmailErro("user@email.com")
+        return email
+
     @property
     def password(self):
         raise AttributeError("Password can't be empty")

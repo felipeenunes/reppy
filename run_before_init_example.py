@@ -2,7 +2,7 @@ import psycopg2
 import os
 from psycopg2.extensions import ISOLATION_LEVEL_AUTOCOMMIT
 
-conn = psycopg2.connect(user="rodrigo", password="1234", host="localhost", port="5432")
+conn = psycopg2.connect(user="gustavo", password="1234", host="localhost", port="5432")
 conn.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
 cursor = conn.cursor()
 
@@ -10,7 +10,7 @@ cursor.execute("DROP DATABASE IF EXISTS reppy;")
 cursor.execute("CREATE DATABASE reppy;")
 cursor.close()
 conn.close()
-conn = psycopg2.connect(database="reppy", user="rodrigo", password="1234", host="localhost", port="5432")
+conn = psycopg2.connect(database="reppy", user="gustavo", password="1234", host="localhost", port="5432")
 os.system("flask db upgrade")
 cursor = conn.cursor()
 cursor.execute("""
@@ -58,7 +58,7 @@ cursor.execute("""
 
 cursor.execute("""
     INSERT INTO 
-        users(cpf, "name", email, college, phone_number, "password", address_id) 
+        users(cpf, "name", email, college, phone_number, "password_hash", address_id) 
     VALUES
         ('12345678901', 'Camilo Renato', 'camilo-renato@email.com', 'Vida', '44999999', 'senha1234', 1),
         ('12345678902', 'Aborílo Mendes', 'abmendes@email.com', 'Unespar', '44999998', 'senha1235', 1),

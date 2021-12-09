@@ -1,8 +1,8 @@
 """ Creating main tables: address, picture, republic, state, user
 
-Revision ID: e168aa0b9d01
+Revision ID: d32688e6e055
 Revises: 
-Create Date: 2021-12-08 19:02:25.142556
+Create Date: 2021-12-09 15:05:14.731246
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = 'e168aa0b9d01'
+revision = 'd32688e6e055'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -39,7 +39,7 @@ def upgrade():
     sa.Column('email', sa.String(), nullable=False),
     sa.Column('college', sa.String(), nullable=False),
     sa.Column('phone_number', sa.String(), nullable=False),
-    sa.Column('password', sa.String(), nullable=False),
+    sa.Column('password_hash', sa.String(), nullable=False),
     sa.Column('address_id', sa.Integer(), nullable=True),
     sa.ForeignKeyConstraint(['address_id'], ['addresses.id'], ),
     sa.PrimaryKeyConstraint('cpf'),

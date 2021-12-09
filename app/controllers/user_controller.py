@@ -14,7 +14,7 @@ def address_get(address):
 def create_user():
     try:
         data = request.get_json()
-
+        
         data_address = data.pop("address")
         
         data['address_id'] = create_address(data_address)
@@ -41,7 +41,27 @@ def create_user():
 
 
 def update_user():
-    ...
+        ...
+        data = request.json
+        try:
+                ...     
+        except:
+                ...
+#     {
+#     "cpf":"12345678213",
+#     "name":"fatinha",
+#     "email":"fatinha@fatinha",
+#     "college":"Rio grande",
+#     "phone_number":"(14)99880-7191",
+#     "password":2569,
+#     "address":{
+#         "uf":"RJ",
+#         "street":"rua b",
+#         "street_number":103,
+#         "city":"Rezende",
+#         "zip_code":12345679
+#     }
+# }
 
 
 # discutir necessidade

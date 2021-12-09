@@ -1,9 +1,8 @@
 from flask import Blueprint
-from app.controllers.user_controller import create_user
+from app.controllers.user_controller import create_user, update_user
 bp = Blueprint("bp_user", __name__, url_prefix='/user')
 
 bp.post("")(create_user)
 bp.get("")
-bp.patch("")
+bp.patch("/<cpf>")(update_user)
 bp.delete("")
-

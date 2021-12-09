@@ -1,16 +1,16 @@
 from dataclasses import dataclass
 from app.configs.database import db
 from sqlalchemy.orm import validates
+import re
+from app.exc.exc import PhoneError
 
 @dataclass
 class UserModel(db.Model):
 
-    cpf:str
     name:str
     email:str
     college:str
     phone_number:str
-    password:str
 
     __tablename__ = 'users'
 
@@ -27,3 +27,12 @@ class UserModel(db.Model):
         if len(cpf) != 11 or not cpf.isnumeric():
             raise ValueError
         return cpf
+    
+    @validates('phone_number')
+    def validate_phone(self,_,phone):
+        regex = r"\([1-9]\d\)\s?\d{5}-\d{4}"
+        match = re.fullmatch(regex,phone)
+        if not match:
+            raise PhoneError("Incorrect, correct phone format:(xx)xxxxx-xxxx!")
+        return phone
+

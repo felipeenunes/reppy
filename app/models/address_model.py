@@ -1,13 +1,15 @@
 from dataclasses import dataclass
 from app.configs.database import db
+from sqlalchemy.orm import backref
+from app.models.state_model import StateModel
+
 @dataclass
 class AddressModel(db.Model):
-    id: int
     street: str
     street_number: str
-    city: str
-    uf_id: int
     zip_code: str
+    city: str
+    state: str
 
     __tablename__ = 'addresses'
     
@@ -17,3 +19,5 @@ class AddressModel(db.Model):
     city = db.Column(db.String(50), nullable=False)
     uf_id = db.Column(db.Integer, db.ForeignKey('states.id'))
     zip_code = db.Column(db.String(8))
+
+    state = db.relationship('StateModel', backref = backref('address', uselist = True), uselist = False)

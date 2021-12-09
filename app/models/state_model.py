@@ -3,8 +3,6 @@ from app.configs.database import db
 
 @dataclass
 class StateModel(db.Model):
-
-    id: int
     uf: str
 
     __tablename__ = "states"

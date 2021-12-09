@@ -3,6 +3,7 @@ from dataclasses import dataclass
 from sqlalchemy.orm import backref
 from app.models.address_model import AddressModel
 from app.models.picture_model import PictureModel
+from app.models.user_model import UserModel
 
 @dataclass
 class RepublicModel(db.Model):
@@ -17,6 +18,7 @@ class RepublicModel(db.Model):
     updated_at: db.DateTime
     address: AddressModel
     pictures: PictureModel
+    user: UserModel
 
     __tablename__ = "republics"
 
@@ -33,3 +35,4 @@ class RepublicModel(db.Model):
 
     address = db.relationship('AddressModel', backref = backref('republic', uselist = False), uselist = False)
     pictures = db.relationship('PictureModel', backref = backref('republic', uselist = False), uselist = True)
+    user = db.relationship('UserModel', backref = backref('republic', uselist = True), uselist = False)

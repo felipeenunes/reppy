@@ -1,19 +1,13 @@
 from datetime import datetime
 from flask import request, current_app, jsonify
 from flask.json import jsonify
-from sqlalchemy import exc
 from sqlalchemy.exc import IntegrityError
-from psycopg2.errors import UniqueViolation, ForeignKeyViolation
-from app.exc.exc import BadRequestError
+from app.exc.exc import BadRequestError, NotFoundError
 from app.models.republic_model import RepublicModel
 from app.models.picture_model import PictureModel
 from app.configs.database import db
 from app.controllers.address_controller import create_address
 
-
-# verificar chaves
-# integrity -> unique
-# 
 def create_republic():
     try:
         session = current_app.db.session
@@ -75,5 +69,14 @@ def get_one(id: int):
         return {'error': 'republic not found'}, 404
     return jsonify(republic)
 
-def delete_republic():
-    ...
+def delete_republic(id: int):
+    try:
+        session = current_app.db.session
+        republic = RepublicModel.query.get(id)
+        if not republic:
+            raise NotFoundError("Republic not found.")
+        session.delete(republic)
+        session.commit()
+        return {}, 204
+    except NotFoundError as err:
+        return jsonify({"error": err.msg}), err.code

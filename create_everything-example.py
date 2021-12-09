@@ -2,13 +2,13 @@ import psycopg2
 import os
 from psycopg2.extensions import ISOLATION_LEVEL_AUTOCOMMIT
 
-# conn = psycopg2.connect(user="rgxvcsilpsigpr", password="3f3e6f971884c1943795dbf987bb44027efa30a230d1c06fa195ccced2cfb31a", host="ec2-54-198-213-75.compute-1.amazonaws.com", port="5432")
-# conn.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
-# cursor = conn.cursor()
+conn = psycopg2.connect(user="gustavo", password="1234", host="localhost", port="5432")
+conn.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
+cursor = conn.cursor()
 
 
-conn = psycopg2.connect(database="d5h6oerts2ud69", user="rgxvcsilpsigpr", password="3f3e6f971884c1943795dbf987bb44027efa30a230d1c06fa195ccced2cfb31a", host="ec2-54-198-213-75.compute-1.amazonaws.com", port="5432")
-# os.system("flask db upgrade")
+conn = psycopg2.connect(database="reppy", user="gustavo", password="1234", host="localhost", port="5432")
+os.system("flask db upgrade")
 cursor = conn.cursor()
 cursor.execute("""
                 INSERT INTO states(UF)

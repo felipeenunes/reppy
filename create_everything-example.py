@@ -58,7 +58,7 @@ cursor.execute("""
 
 cursor.execute("""
     INSERT INTO 
-        users(cpf, "name", email, college, phone_number, "password", address_id) 
+        users(cpf, "name", email, college, phone_number, "password_hash", address_id) 
     VALUES
         ('12345678901', 'Camilo Renato', 'camilo-renato@email.com', 'Vida', '44999999', 'senha1234', 1),
         ('12345678902', 'Aborílo Mendes', 'abmendes@email.com', 'Unespar', '44999998', 'senha1235', 1),

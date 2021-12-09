@@ -8,6 +8,7 @@ from sqlalchemy.exc import IntegrityError
 from psycopg2.errors import UniqueViolation
 import re
 
+
 def create_user():
     try:
         data = request.get_json()
@@ -54,7 +55,7 @@ def login_user():
 def update_user(cpf):
         data = request.json
         try:
-                query = UserModel.query.filter_by(cpf=cpf).first_or_404()
+                user = UserModel.query.filter_by(cpf=cpf).first_or_404()
                 output = {}
                 for i in data:
                         if type(data[i]) != str and i != 'address':
@@ -76,7 +77,10 @@ def update_user(cpf):
                         setattr(query,key,value)
                 if 'address' in data:
                         output['adress'] = update_adress(data['address'], query)
-                return output,202
+
+                user.query.filter_by(cpf=cpf).update(output)
+                current_app.db.session.commit()
+                return output, 202
         
         except AttributeError:
                 return {"msg": "Invalid UF, try XX"},400

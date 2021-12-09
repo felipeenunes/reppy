@@ -9,4 +9,4 @@ def init_app(app: Flask):
 
     app.db = db
 
- 
+  

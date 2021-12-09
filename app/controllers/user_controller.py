@@ -24,7 +24,7 @@ def create_user():
         current_app.db.session.add(user)
         current_app.db.session.commit()
         
-        return jsonify(user), 201
+        return jsonify({"cpf":user.cpf,"name": user.name, "email":user.email, "college":user.college,"phone_number":user.phone_number, "address":user.address}), 201
     except ValueError:
         address_get(data['address_id'])
         return {"error":"Field cpf must have 11 characters"},400
@@ -35,11 +35,25 @@ def create_user():
         current_app.db.session.rollback()
         address_get(data['address_id'])
         return jsonify({'Error':'cpf, email ou name already exists'}),409
-    
+    except AttributeError:
+        return jsonify({"error": "values must be strings"})
 
 
+def login_user():
 
+    data = request.get_json()
 
+    try:
+        if 'email' in data and 'password' in data and len(data) == 2:
+            user = UserModel.query.filter_by(email=data['email']).first()
+            
+            if user.check_password(data['password']):
+                return jsonify({'passou':'passou'}),200
+            
+            return jsonify({'Error':'Email and password incorrect'}),401
+        else : raise KeyError
+    except KeyError:
+        return jsonify({'Error':'Email and password must be given only'}),400
 
 def update_user():
     ...

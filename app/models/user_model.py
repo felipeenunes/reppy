@@ -3,6 +3,8 @@ from app.configs.database import db
 from sqlalchemy.orm import validates
 import re
 from app.exc.exc import PhoneError
+from werkzeug.security import generate_password_hash,check_password_hash
+from sqlalchemy.orm import backref
 
 @dataclass
 class UserModel(db.Model):
@@ -19,8 +21,10 @@ class UserModel(db.Model):
     email = db.Column(db.String, nullable=False, unique=True)
     college = db.Column(db.String, nullable=False)
     phone_number = db.Column(db.String, nullable=False)
-    password = db.Column(db.String, nullable=False)
+    password_hash = db.Column(db.String, nullable=False)
     address_id = db.Column(db.Integer, db.ForeignKey("addresses.id"))
+
+    address = db.relationship('AddressModel',backref= backref('address',uselist = True))
 
     @validates('cpf')
     def validate_cpf(self,_,cpf):
@@ -35,4 +39,15 @@ class UserModel(db.Model):
         if not match:
             raise PhoneError("Incorrect, correct phone format:(xx)xxxxx-xxxx!")
         return phone
+    
+    @property
+    def password(self):
+        raise AttributeError("Password can't be empty")
+    
+    @password.setter
+    def password(self, password_to_hash):
+        self.password_hash = generate_password_hash(password_to_hash)
+    
+    def check_password(self, password_to_compare):
+        return check_password_hash(self.password_hash, password_to_compare)
 

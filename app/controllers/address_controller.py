@@ -1,9 +1,6 @@
-
 from app.models.address_model import AddressModel
 from app.models.state_model import StateModel
 from app.configs.database import db
-from app.models.user_model import UserModel
-
 
 def create_address(address_data):
     street = address_data["street"].title()

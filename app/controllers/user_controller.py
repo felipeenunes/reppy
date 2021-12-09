@@ -2,10 +2,11 @@ from flask import request, current_app, jsonify
 from werkzeug.exceptions import NotFound
 from app.models.user_model import UserModel
 from app.controllers.address_controller import create_address
-from app.exc.exc import PhoneError
+from app.exc.exc import PhoneError,InavlidQuantyPassword
 from sqlalchemy.exc import IntegrityError
 from psycopg2.errors import UniqueViolation
 from app.models.address_model import AddressModel
+from flask_jwt_extended import create_access_token
 
 def address_get(address):
     address = AddressModel.query.get(address)
@@ -19,6 +20,10 @@ def create_user():
         data_address = data.pop("address")
         
         data['address_id'] = create_address(data_address)
+
+        if len(data['password']) < 6:
+           raise InavlidQuantyPassword('Password must contain at least 6 digits')
+
         
         user = UserModel(**data)
         current_app.db.session.add(user)
@@ -37,6 +42,8 @@ def create_user():
         return jsonify({'Error':'cpf, email ou name already exists'}),409
     except AttributeError:
         return jsonify({"error": "values must be strings"})
+    except InavlidQuantyPassword as e:
+        return jsonify({'error': str(e)})
 
 
 def login_user():
@@ -48,7 +55,8 @@ def login_user():
             user = UserModel.query.filter_by(email=data['email']).first()
             
             if user.check_password(data['password']):
-                return jsonify({'passou':'passou'}),200
+                access_token = create_access_token(user)
+                return jsonify({'token': access_token}),200
             
             return jsonify({'Error':'Email and password incorrect'}),401
         else : raise KeyError

@@ -1,4 +1,4 @@
 venv/
 .env
 **__pycache__
-create_everything.py
+create_everything

@@ -1,6 +1,7 @@
 from dataclasses import dataclass
 from app.configs.database import db
-from sqlalchemy.orm import validates
+from sqlalchemy.orm import backref, validates
+from app.models.republic_model import RepublicModel
 
 @dataclass
 class UserModel(db.Model):
@@ -11,6 +12,7 @@ class UserModel(db.Model):
     college:str
     phone_number:str
     password:str
+    republics: RepublicModel
 
     __tablename__ = 'users'
 
@@ -21,6 +23,8 @@ class UserModel(db.Model):
     phone_number = db.Column(db.String, nullable=False)
     password = db.Column(db.String, nullable=False)
     address_id = db.Column(db.Integer, db.ForeignKey("addresses.id"))
+
+    republics = db.relationship('RepublicModel', backref = backref('user'), uselist = True)
 
     @validates('cpf')
     def validate_cpf(self,_,cpf):

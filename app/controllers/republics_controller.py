@@ -47,7 +47,13 @@ def get_all_republics():
     return jsonify(republics)
 
 def get_one(id: int):
-    ...
+    try:
+        republic = RepublicModel.query.get(id)
+        if not republic:
+            raise IndexError
+    except IndexError:
+        return {'error': 'republic not found'}, 404
+    return jsonify(republic)
 
 def delete_republic():
     ...

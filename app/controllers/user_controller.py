@@ -6,7 +6,6 @@ from app.controllers.address_controller import create_address,address_delete, up
 from app.exc.exc import PhoneError,InavlidQuantyPassword,KeyErrorUser,EmailErro
 from sqlalchemy.exc import IntegrityError
 from psycopg2.errors import UniqueViolation
-
 import re
 from flask_jwt_extended import create_access_token
 
@@ -89,14 +88,16 @@ def update_user(cpf):
                             raise PhoneError("Incorrect, correct phone format:(xx)xxxxx-xxxx!")
                         output['phone_number'] = data['phone_number']
                         
-                if 'password' in data: output["password"] = data["password"]
-                print(data)
+                if 'password' in data:
+                     user.password = data['password']
+                     output['password_hash'] = user.password_hash
                 for key, value in data.items():
                         setattr(query,key,value)
                 if 'address' in data:
                         output['adress'] = update_adress(data['address'], query)
                 user.query.filter_by(cpf=cpf).update(output)
                 current_app.db.session.commit()
+                output.pop('password_hash')
                 return output, 202
         
         except AttributeError:

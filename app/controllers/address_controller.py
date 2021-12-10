@@ -1,9 +1,8 @@
-
+from flask import request
+from app.exc.exc import InvalidZipCode
 from app.models.address_model import AddressModel
 from app.models.state_model import StateModel
 from app.configs.database import db
-from app.models.user_model import UserModel
-
 
 def create_address(address_data):
     street = address_data["street"].title()
@@ -17,6 +16,7 @@ def create_address(address_data):
     db.session.add(address)
     db.session.commit()
     return address.id
+    
 
 def update_adress(address_data, user):
     for i in address_data: 

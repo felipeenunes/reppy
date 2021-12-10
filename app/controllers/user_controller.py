@@ -6,7 +6,6 @@ from app.controllers.address_controller import create_address,address_delete, up
 from app.exc.exc import PhoneError,InavlidQuantyPassword,KeyErrorUser,EmailErro
 from sqlalchemy.exc import IntegrityError
 from psycopg2.errors import UniqueViolation
-from app.models.address_model import AddressModel
 import re
 from flask_jwt_extended import create_access_token
 

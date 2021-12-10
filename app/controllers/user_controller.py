@@ -9,7 +9,7 @@ from psycopg2.errors import UniqueViolation
 from app.models.address_model import AddressModel
 import re
 from flask_jwt_extended import create_access_token
-from email_validator import validate_email,EmailNotValidError,EmailSyntaxError
+
 
 
 def create_user():

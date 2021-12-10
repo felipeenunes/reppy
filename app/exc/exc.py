@@ -7,7 +7,7 @@ class InavlidQuantyPassword(Exception):
 
 class KeyErrorUser(Exception):
     ...
-class EmailErro(Exception):
+class EmailError(Exception):
     ...
 class BadRequestError(Exception):
     def __init__(self, msg):

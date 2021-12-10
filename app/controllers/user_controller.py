@@ -3,7 +3,7 @@ from sqlalchemy.orm import query
 from werkzeug.exceptions import NotFound
 from app.models.user_model import UserModel
 from app.controllers.address_controller import create_address,address_delete, update_adress
-from app.exc.exc import PhoneError,InavlidQuantyPassword,KeyErrorUser,EmailErro
+from app.exc.exc import PhoneError,InavlidQuantyPassword,KeyErrorUser,EmailError
 from sqlalchemy.exc import IntegrityError
 from psycopg2.errors import UniqueViolation
 import re
@@ -14,7 +14,7 @@ def create_user():
         data = request.get_json()
         data['phone_number']= str(data['phone_number'])
         data["password"] = str(data["password"] )
-        print(len(data))
+        
 
         keys = ["cpf","name","email","email","college","phone_number","password", "address"]
         for key in keys:
@@ -50,7 +50,7 @@ def create_user():
         return jsonify({'error': str(e)}),400
     except (KeyErrorUser, KeyError) as e:
         return jsonify({'error': f'keys must contain{str(e)}'}),400
-    except EmailErro as e:
+    except EmailError as e:
         return jsonify({'error':str(e)}),400
 
 
@@ -61,8 +61,9 @@ def login_user():
     try:
         if 'email' in data and 'password' in data and len(data) == 2:
             user = UserModel.query.filter_by(email=data['email']).first()
-            
-            if user.check_password(str(data['password'])):
+            if user is None:
+                    raise KeyErrorUser('User not found')
+            if user.check_password(data['password']):
                 access_token = create_access_token(user)
                 return jsonify({'token': access_token}),200
             
@@ -70,6 +71,10 @@ def login_user():
         else : raise KeyError
     except KeyError:
         return jsonify({'Error':'Email and password must be given only'}),400
+    except KeyErrorUser as e:
+            return jsonify({'Error':str(e)}),404
+
+
 
 
 @jwt_required(locations=["headers"])

@@ -30,7 +30,7 @@ def update_adress(address_data, user):
     if 'uf' in address_data:
         data['uf_id'] = AddressModel.uf_id = StateModel.query.filter_by(uf=data['uf']).first().id
         del data['uf']
-        ...
+
     query = AddressModel.query.filter_by(id=user.address_id)
     for key, value in data.items():
         setattr(query,key,value)
@@ -45,14 +45,3 @@ def address_delete(address):
     db.session.delete(address)
     db.session.commit()
     return address
-
-# {
-#         "uf":"RJ",
-#         "street":"rua b",
-#         "street_number":"3",
-#         "city":"Rezende",
-#         "zip_code":"12345679"
-#       
-#     }
-    ...
-

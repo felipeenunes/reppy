@@ -52,8 +52,6 @@ def create_user():
     except EmailErro as e:
         return jsonify({'error':str(e)}),200
 
-    
-
 
 def login_user():
 
@@ -91,13 +89,12 @@ def update_user(cpf):
                             raise PhoneError("Incorrect, correct phone format:(xx)xxxxx-xxxx!")
                         output['phone_number'] = data['phone_number']
                         
-                if 'password' in data:
-                        ...
+                if 'password' in data: output["password"] = data["password"]
+                print(data)
                 for key, value in data.items():
                         setattr(query,key,value)
                 if 'address' in data:
                         output['adress'] = update_adress(data['address'], query)
-
                 user.query.filter_by(cpf=cpf).update(output)
                 current_app.db.session.commit()
                 return output, 202
@@ -112,21 +109,6 @@ def update_user(cpf):
                 return {"msg": "Incorrect, correct phone format:(xx)xxxxx-xxxx!"}, 400
         except (UniqueViolation, IntegrityError):
                 return jsonify({'Error':'cpf, email ou name already exists'}),409
-#      {
-#     "cpf":"12345678213",
-#     "name":"fatinha",
-#     "email":"fatinha@fatinha",
-#     "college":"Rio grande",
-#     "phone_number":"(14)99880-7191",
-#     "password":2569,
-#     "address":{
-#         "uf":"RJ",
-#         "street":"rua b",
-#         "street_number":103,
-#         "city":"Rezende",
-#         "zip_code":12345679
-#     }
-# }
 
 
 def get_user_by_id(cpf):
@@ -137,7 +119,7 @@ def get_user_by_id(cpf):
         except NotFound:
                 return {"msg": "User not Found"},404
 
-# discutir necessidade
+
 def delete_user(cpf):
         try:
                 query = UserModel.query.filter_by(cpf=cpf).first_or_404()
@@ -146,4 +128,3 @@ def delete_user(cpf):
                 return '', 204
         except NotFound:
                 return {"msg": "User not Found"},404
-

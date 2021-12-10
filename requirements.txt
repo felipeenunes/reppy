@@ -3,6 +3,8 @@ backcall==0.2.0
 click==8.0.3
 decorator==5.1.0
 Flask==2.0.2
+Flask-HTTPAuth==4.5.0
+Flask-JWT-Extended==4.3.1
 Flask-Migrate==3.1.0
 Flask-SQLAlchemy==2.5.1
 greenlet==1.1.2
@@ -22,6 +24,7 @@ prompt-toolkit==3.0.23
 psycopg2-binary==2.9.2
 ptyprocess==0.7.0
 Pygments==2.10.0
+PyJWT==2.3.0
 python-dotenv==0.19.2
 SQLAlchemy==1.4.27
 toml==0.10.2

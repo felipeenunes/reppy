@@ -93,7 +93,8 @@ def update_user(cpf):
                         output['phone_number'] = data['phone_number']
                         
                 if 'password' in data:
-                        ...
+                     user.password = data['password']
+                     output['password_hash'] = user.password_hash
                 for key, value in data.items():
                         setattr(query,key,value)
                 if 'address' in data:
@@ -101,6 +102,7 @@ def update_user(cpf):
 
                 user.query.filter_by(cpf=cpf).update(output)
                 current_app.db.session.commit()
+                output.pop('password_hash')
                 return output, 202
         
         except AttributeError:

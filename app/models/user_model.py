@@ -2,7 +2,7 @@ from dataclasses import dataclass
 from app.configs.database import db
 from sqlalchemy.orm import validates
 import re
-from app.exc.exc import PhoneError,EmailErro
+from app.exc.exc import PhoneError,EmailError
 from werkzeug.security import generate_password_hash,check_password_hash,gen_salt
 
 from sqlalchemy.orm import backref
@@ -60,7 +60,7 @@ class UserModel(db.Model):
         regex = r"^[\w-]+@[a-z\d]+\.[\w]{3}"
         match = re.fullmatch(regex,email)
         if not match:
-            raise EmailErro("user@email.com")
+            raise EmailError("user@email.com")
         return email
     
     #endregion

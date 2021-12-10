@@ -6,7 +6,7 @@ from app.exc.exc import BadRequestError, NotFoundError, InvalidZipCode
 from app.models.republic_model import RepublicModel
 from app.models.picture_model import PictureModel
 from app.configs.database import db
-from app.controllers.address_controller import create_address, update_addresses_from_rep
+from app.controllers.address_controller import create_address
 from datetime import datetime
 
 def create_republic():

@@ -3,7 +3,7 @@ from sqlalchemy.orm import query
 from werkzeug.exceptions import NotFound
 from app.models.user_model import UserModel
 from app.controllers.address_controller import create_address,address_delete, update_adress
-from app.exc.exc import PhoneError,InavlidQuantyPassword,KeyErrorUser,EmailErro
+from app.exc.exc import PhoneError,InavlidQuantyPassword,KeyErrorUser, EmailError
 from sqlalchemy.exc import IntegrityError
 from psycopg2.errors import UniqueViolation
 import re
@@ -13,8 +13,7 @@ def create_user():
     try:
         data = request.get_json()
         data['phone_number']= str(data['phone_number'])
-        data["password"] = str(data["password"] )
-        print(len(data))
+        data["password"] = str(data["password"])
 
         keys = ["cpf","name","email","email","college","phone_number","password", "address"]
         for key in keys:
@@ -33,24 +32,25 @@ def create_user():
         current_app.db.session.add(user)
         current_app.db.session.commit()
         
-        return jsonify({"cpf":user.cpf,"name": user.name, "email":user.email, "college":user.college,"phone_number":user.phone_number, "address":user.address}), 201
+        # return jsonify({"cpf":user.cpf,"name": user.name, "email":user.email, "college":user.college,"phone_number":user.phone_number, "address":user.address}), 201
+        return jsonify(user)
     except ValueError:
         address_delete(data['address_id'])
         return {"error":"Field cpf must have 11 characters"},400
     except PhoneError as err:
         address_delete(data['address_id'])
-        return jsonify({'Erro':str(err)}),400
+        return jsonify({'error':str(err)}),400
     except (UniqueViolation, IntegrityError):
         current_app.db.session.rollback()
         address_delete(data['address_id'])
-        return jsonify({'Error':'cpf, email ou name already exists'}),409
+        return jsonify({'error':'cpf, email ou name already exists'}),409
     except TypeError as e:
         return jsonify({"error":"values must be strings"}),400
     except InavlidQuantyPassword as e:
         return jsonify({'error': str(e)}),400
     except (KeyErrorUser, KeyError) as e:
         return jsonify({'error': f'keys must contain{str(e)}'}),400
-    except EmailErro as e:
+    except EmailError as e:
         return jsonify({'error':str(e)}),400
 
 

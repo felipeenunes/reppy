@@ -13,47 +13,16 @@ conn.close()
 conn = psycopg2.connect(database="reppy", user="rodrigo", password="1234", host="localhost", port="5432")
 os.system("flask db upgrade")
 cursor = conn.cursor()
-cursor.execute("""
-                INSERT INTO states(UF)
-                VALUES
-                    ('AC'),
-                    ('AL'),
-                    ('AP'),
-                    ('AM'),
-                    ('BA'),
-                    ('CE'),
-                    ('DF'),
-                    ('ES'),
-                    ('GO'),
-                    ('MA'),
-                    ('MT'),
-                    ('MS'),
-                    ('MG'),
-                    ('PA'),
-                    ('PB'),
-                    ('PR'),
-                    ('PE'),
-                    ('PI'),
-                    ('RJ'),
-                    ('RN'),
-                    ('RS'),
-                    ('RO'),
-                    ('RR'),
-                    ('SC'),
-                    ('SP'),
-                    ('SE'),
-                    ('TO');
-            """)
 
 cursor.execute("""
     INSERT INTO 
-        addresses(street, street_number, city, uf_id, zip_code)
+        addresses(street, street_number, city, zip_code, uf)
     VALUES
-        ('Rua Laurindo Borges', '3232', 'Alabama', 1, '12312313'),
-        ('Rua Bacharel em Ciencias da Computação', '254', 'Sunday Bloody Sunday', 1, '32524512'),
-        ('Avenida Mãe de Pet', '85', 'Também é Mãe', 2, '53355215'),
-        ('Avenida Alfredo Tarraga', '4658', 'Crossfit', 3, '54545242'),
-        ('Rua Abelardo Freitas', '333', 'Cidade', 3, '54545274');
+        ('Rua Laurindo Borges', '3232', 'Alabama', '12312313', 'PR'),
+        ('Rua Bacharel em Ciencias da Computação', '254', 'Sunday Bloody Sunday', '32524512', 'TO'),
+        ('Avenida Mãe de Pet', '85', 'Também é Mãe', '53355215', 'RJ'),
+        ('Avenida Alfredo Tarraga', '4658', 'Crossfit', '54545242', 'SP'),
+        ('Rua Abelardo Freitas', '333', 'Cidade', '54545274', 'PR');
 """)
 
 

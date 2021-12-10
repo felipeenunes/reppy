@@ -118,7 +118,7 @@ def get_user_by_id(cpf):
                 return jsonify(query),200
 
         except NotFound:
-                return {"msg": "User not Found"},404
+                return {"Error": "User not Found"},404
 
 
 def delete_user(cpf):
@@ -128,4 +128,5 @@ def delete_user(cpf):
                 current_app.db.session.commit()
                 return '', 204
         except NotFound:
-                return {"msg": "User not Found"},404
+                return {"Error": "User not Found"}, 404
+

@@ -16,6 +16,8 @@ class UserModel(db.Model):
 
     __tablename__ = 'users'
 
+    #region properties
+
     cpf = db.Column(db.String, primary_key=True)
     name = db.Column(db.String, nullable=False, unique=True)
     email = db.Column(db.String, nullable=False, unique=True)
@@ -26,6 +28,17 @@ class UserModel(db.Model):
 
     address = db.relationship('AddressModel',backref= backref('address',uselist = True))
 
+    @property
+    def password(self):
+        raise AttributeError("Password can't be empty")
+    
+    @password.setter
+    def password(self, password_to_hash):
+        self.password_hash = generate_password_hash(password_to_hash)
+
+    #endregion
+
+    #region validations
     @validates('cpf')
     def validate_cpf(self,_,cpf):
         if len(cpf) != 11 or not cpf.isnumeric():
@@ -47,15 +60,9 @@ class UserModel(db.Model):
         if not match:
             raise EmailErro("user@email.com")
         return email
+    
+    #endregion
 
-    @property
-    def password(self):
-        raise AttributeError("Password can't be empty")
-    
-    @password.setter
-    def password(self, password_to_hash):
-        self.password_hash = generate_password_hash(password_to_hash)
-    
     def check_password(self, password_to_compare):
         return check_password_hash(self.password_hash, password_to_compare)
 

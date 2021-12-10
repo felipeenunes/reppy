@@ -97,7 +97,7 @@ def update_user(cpf):
                         output['adress'] = update_adress(data['address'], query)
                 user.query.filter_by(cpf=cpf).update(output)
                 current_app.db.session.commit()
-                output.pop('password_hash')
+                
                 return output, 202
         
         except AttributeError:

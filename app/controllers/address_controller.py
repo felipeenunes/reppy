@@ -3,12 +3,17 @@ from app.models.state_model import StateModel
 from app.configs.database import db
 
 def create_address(address_data):
+    keys = ['street','street_number','city','uf','zip_code']
+    for key in address_data:
+        if not key in keys:
+            raise KeyError
+        if type(address_data[key]) != str: raise TypeError
     street = address_data["street"].title()
-    street_number = address_data["street_number"]
+    street_number = str(address_data["street_number"])
     city = address_data["city"]
     uf = address_data["uf"].upper()
     uf_id = StateModel.query.filter_by(uf=uf).first().id
-    zip_code = address_data["zip_code"]
+    zip_code = str(address_data["zip_code"])
 
     address = AddressModel(street=street, street_number=street_number, city=city, uf_id=uf_id, zip_code=zip_code)
     db.session.add(address)
@@ -17,14 +22,19 @@ def create_address(address_data):
     
 
 def update_adress(address_data, user):
+    keys = ['street','street_number','city','uf','zip_code']
+    for key in address_data:
+        if not key in keys:
+            raise KeyError
+        if type(address_data[key]) != str: raise TypeError
     for i in address_data: 
         if type(i) != str: raise TypeError
     data = {}
     if 'uf' in address_data: data['uf'] = address_data['uf'].upper()
     if 'street' in address_data: data['street'] = address_data['street'].upper()
-    if 'street_number' in address_data: data['street_number'] = address_data['street_number']
+    if 'street_number' in address_data: data['street_number'] = str(address_data['street_number'])
     if 'city' in address_data: data['city'] = address_data['city']
-    if 'zip_code' in address_data: data['zip_code'] = address_data['zip_code']
+    if 'zip_code' in address_data: data['zip_code'] = str(address_data['zip_code'])
     if 'uf' in address_data:
         data['uf_id'] = AddressModel.uf_id = StateModel.query.filter_by(uf=data['uf']).first().id
         del data['uf']

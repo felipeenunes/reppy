@@ -2,7 +2,7 @@ from dataclasses import dataclass
 from app.configs.database import db
 from sqlalchemy.orm import validates
 import re
-from app.exc.exc import PhoneError,EmailError
+from app.exc.exc import EmailError, PhoneError
 from werkzeug.security import generate_password_hash,check_password_hash,gen_salt
 
 from sqlalchemy.orm import backref

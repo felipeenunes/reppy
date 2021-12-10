@@ -3,7 +3,8 @@ from app.configs.database import db
 from sqlalchemy.orm import validates
 import re
 from app.exc.exc import PhoneError,EmailErro
-from werkzeug.security import generate_password_hash,check_password_hash
+from werkzeug.security import generate_password_hash,check_password_hash,gen_salt
+
 from sqlalchemy.orm import backref
 
 @dataclass
@@ -34,6 +35,7 @@ class UserModel(db.Model):
     
     @password.setter
     def password(self, password_to_hash):
+        salt = gen_salt(16)
         self.password_hash = generate_password_hash(password_to_hash)
 
     #endregion

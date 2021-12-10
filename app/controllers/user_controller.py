@@ -7,18 +7,20 @@ from app.exc.exc import PhoneError,InavlidQuantyPassword,KeyErrorUser,EmailErro
 from sqlalchemy.exc import IntegrityError
 from psycopg2.errors import UniqueViolation
 import re
-from flask_jwt_extended import create_access_token
-
+from flask_jwt_extended import create_access_token,get_jwt,jwt_required
 
 
 def create_user():
     try:
         data = request.get_json()
+        data['phone_number']= str(data['phone_number'])
+        data["password"] = str(data["password"] )
+        print(len(data))
 
         keys = ["cpf","name","email","email","college","phone_number","password", "address"]
         for key in keys:
-            if not key in data: 
-                raise KeyErrorUser("Key must be cpf,name,email,phone_number,password")
+            if not key in data or (len(data) > 7): 
+                raise KeyErrorUser("cpf,name,email,phone_number,password,address")
 
         if len(data['password']) < 6:
            raise InavlidQuantyPassword('Password must contain at least 6 digits')
@@ -43,16 +45,14 @@ def create_user():
         current_app.db.session.rollback()
         address_delete(data['address_id'])
         return jsonify({'Error':'cpf, email ou name already exists'}),409
-    except AttributeError:
-        return jsonify({"error": "values must be strings"})
+    except TypeError as e:
+        return jsonify({"error":"values must be strings"}),400
     except InavlidQuantyPassword as e:
         return jsonify({'error': str(e)}),400
-    except KeyErrorUser as e:
-        return jsonify({'error': str(e) }),400
+    except (KeyErrorUser, KeyError) as e:
+        return jsonify({'error': f'keys must contain{str(e)}'}),400
     except EmailErro as e:
-        return jsonify({'error':str(e)}),200
-
-    
+        return jsonify({'error':str(e)}),400
 
 
 def login_user():
@@ -63,7 +63,7 @@ def login_user():
         if 'email' in data and 'password' in data and len(data) == 2:
             user = UserModel.query.filter_by(email=data['email']).first()
             
-            if user.check_password(data['password']):
+            if user.check_password(str(data['password'])):
                 access_token = create_access_token(user)
                 return jsonify({'token': access_token}),200
             
@@ -72,10 +72,14 @@ def login_user():
     except KeyError:
         return jsonify({'Error':'Email and password must be given only'}),400
 
-def update_user(cpf):
+
+@jwt_required(locations=["headers"])
+def update_user():
         data = request.json
+        email_token = get_jwt()
         try:
-                user = UserModel.query.filter_by(cpf=cpf).first_or_404()
+                
+                user = UserModel.query.filter_by(email=email_token['sub']['email']).first_or_404()
                 output = {}
                 for i in data:
                         if type(data[i]) != str and i != 'address':
@@ -99,9 +103,12 @@ def update_user(cpf):
                 if 'address' in data:
                         output['adress'] = update_adress(data['address'], query)
 
-                user.query.filter_by(cpf=cpf).update(output)
+                user.query.filter_by(email=email_token['sub']['email']).update(output)
                 current_app.db.session.commit()
-                output.pop('password_hash')
+               
+                if 'password' in data:
+                        output.pop('password_hash')
+             
                 return output, 202
         
         except AttributeError:
@@ -114,6 +121,8 @@ def update_user(cpf):
                 return {"msg": "Incorrect, correct phone format:(xx)xxxxx-xxxx!"}, 400
         except (UniqueViolation, IntegrityError):
                 return jsonify({'Error':'cpf, email ou name already exists'}),409
+        # except KeyError as e:
+        #         jsonify({'error': f'keys must contain{str(e)}'}),400
 #      {
 #     "cpf":"12345678213",
 #     "name":"fatinha",
@@ -139,10 +148,11 @@ def get_user_by_id(cpf):
         except NotFound:
                 return {"msg": "User not Found"},404
 
-# discutir necessidade
-def delete_user(cpf):
+@jwt_required(locations=["headers"])
+def delete_user():
+        email_token = get_jwt()
         try:
-                query = UserModel.query.filter_by(cpf=cpf).first_or_404()
+                query = UserModel.query.filter_by(email=email_token['sub']['email']).first_or_404()
                 current_app.db.session.delete(query)
                 current_app.db.session.commit()
                 return '', 204

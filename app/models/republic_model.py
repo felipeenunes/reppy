@@ -31,7 +31,7 @@ class RepublicModel(db.Model):
     created_at = db.Column(db.DateTime)
     updated_at = db.Column(db.DateTime)
     user_cpf = db.Column(db.String, db.ForeignKey('users.cpf'))
-    address_id = db.Column(db.Integer, db.ForeignKey('addresses.id'))
+    address_id = db.Column(db.Integer, db.ForeignKey('addresses.id'), unique=True)
 
     address = db.relationship('AddressModel', backref = backref('republic', uselist = False), uselist = False, cascade='all, delete-orphan', single_parent=True)
     pictures = db.relationship('PictureModel', backref = backref('republic', uselist = False), uselist = True, cascade='all, delete-orphan', single_parent=True)

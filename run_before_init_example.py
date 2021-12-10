@@ -50,9 +50,10 @@ cursor.execute("""
         addresses(street, street_number, city, uf_id, zip_code)
     VALUES
         ('Rua Laurindo Borges', '3232', 'Alabama', 1, '12312313'),
-        ('Rua Bacharel em Ciencias da Computação', '254', 'Sunday Bloody Sunday', 1, '3252451'),
+        ('Rua Bacharel em Ciencias da Computação', '254', 'Sunday Bloody Sunday', 1, '32524512'),
         ('Avenida Mãe de Pet', '85', 'Também é Mãe', 2, '53355215'),
-        ('Avenida Alfredo Tarraga', '4658', 'Crossfit', 3, '545452');
+        ('Avenida Alfredo Tarraga', '4658', 'Crossfit', 3, '54545242'),
+        ('Rua Abelardo Freitas', '333', 'Cidade', 3, '54545274');
 """)
 
 
@@ -72,10 +73,10 @@ cursor.execute("""
         republics ("name", description, vacancies_qty, max_occupancy, price, created_at, updated_at, user_cpf, address_id)
     VALUES
         ('Republica Kanil', 'Republica para cachorros e cachorras', 3, 10, 350, '08/12/2021', '08/12/2021', '12345678901', 1),
-        ('Republica Sarcóphagos', 'Republica para sarcófagos e mafagafinhos', 2, 15, 400, '08/12/2021', '08/12/2021', '12345678901', 1),
-        ('Republica Detran', 'Republica para detrons e detox', 1, 5, 120, '08/12/2021', '08/12/2021', '12345678902', 2),
-        ('Republica Mexico Delas', 'Republica para mexicanos e guatemaltecos', 4, 11, 500, '08/12/2021', '08/12/2021', '12345678903', 3),
-        ('Republica 100 Noção', 'Republica para 100s e noções', 10, 20, 720, '08/12/2021', '08/12/2021', '12345678904', 4);
+        ('Republica Sarcóphagos', 'Republica para sarcófagos e mafagafinhos', 2, 15, 400, '08/12/2021', '08/12/2021', '12345678901', 2),
+        ('Republica Detran', 'Republica para detrons e detox', 1, 5, 120, '08/12/2021', '08/12/2021', '12345678902', 3),
+        ('Republica Mexico Delas', 'Republica para mexicanos e guatemaltecos', 4, 11, 500, '08/12/2021', '08/12/2021', '12345678903', 4),
+        ('Republica 100 Noção', 'Republica para 100s e noções', 10, 20, 720, '08/12/2021', '08/12/2021', '12345678904', 5);
 """)
 
 cursor.execute("""

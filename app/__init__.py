@@ -13,6 +13,7 @@ def create_app() -> Flask:
     app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
     app.config["JSON_SORT_KEYS"] = False
     app.config["SECRET_KEY"] = environ.get("SECRET_KEY")
+    app.config["JWT_TOKEN_LOCATION"] = ["headers", "cookies", "json", "query_string"]
 
     database.init_app(app)
     migration.init_app(app)

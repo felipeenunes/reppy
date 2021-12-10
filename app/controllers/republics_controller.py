@@ -1,12 +1,13 @@
 from datetime import datetime
 from flask import request, current_app, jsonify
 from flask.json import jsonify
-from sqlalchemy.exc import IntegrityError
+from sqlalchemy.exc import IntegrityError, DataError
 from app.exc.exc import BadRequestError, NotFoundError, InvalidZipCode
 from app.models.republic_model import RepublicModel
 from app.models.picture_model import PictureModel
 from app.configs.database import db
-from app.controllers.address_controller import create_address
+from app.controllers.address_controller import create_address, update_addresses_from_rep
+from datetime import datetime
 
 def create_republic():
     try:
@@ -54,8 +55,9 @@ def create_republic():
     except InvalidZipCode as e:
         return {'error': str(e)}, 400
 
-def update_republic():
+def update_republic(id):
     ...
+
 
 def get_all_republics():
     republics = RepublicModel.query.all()

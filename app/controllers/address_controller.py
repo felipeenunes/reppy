@@ -1,5 +1,3 @@
-from flask import request
-from app.exc.exc import InvalidZipCode
 from app.models.address_model import AddressModel
 from app.models.state_model import StateModel
 from app.configs.database import db

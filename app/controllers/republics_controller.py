@@ -52,7 +52,7 @@ def get_one(id: int):
         if not republic:
             raise IndexError
     except IndexError:
-        return {'error': 'republic not found'}, 404
+        return {'Error': 'republic not found'}, 404
     return jsonify(republic)
 
 def delete_republic():

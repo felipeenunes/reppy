@@ -27,7 +27,7 @@ def create_user():
         return jsonify({"cpf":user.cpf,"name": user.name, "email":user.email, "college":user.college,"phone_number":user.phone_number, "address":user.address}), 201
     except ValueError:
         address_get(data['address_id'])
-        return {"error":"Field cpf must have 11 characters"},400
+        return {"Error":"Field cpf must have 11 characters"},400
     except PhoneError as err:
         address_get(data['address_id'])
         return jsonify({'Erro':str(err)}),400
@@ -36,7 +36,7 @@ def create_user():
         address_get(data['address_id'])
         return jsonify({'Error':'cpf, email ou name already exists'}),409
     except AttributeError:
-        return jsonify({"error": "values must be strings"})
+        return jsonify({"Error": "values must be strings"})
 
 
 def login_user():
@@ -66,7 +66,7 @@ def get_user_by_id(cpf):
                 return jsonify(query),200
 
         except NotFound:
-                return {"msg": "User not Found"},404
+                return {"Error": "User not Found"},404
 
 # discutir necessidade
 def delete_user(cpf):
@@ -76,5 +76,5 @@ def delete_user(cpf):
                 current_app.db.session.commit()
                 return '', 204
         except NotFound:
-                return {"msg": "User not Found"},404
+                return {"Error": "User not Found"},404
 

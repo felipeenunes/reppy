@@ -9,7 +9,6 @@ from psycopg2.errors import UniqueViolation
 import re
 from flask_jwt_extended import create_access_token,get_jwt,jwt_required
 
-
 def create_user():
     try:
         data = request.get_json()
@@ -121,23 +120,6 @@ def update_user():
                 return {"msg": "Incorrect, correct phone format:(xx)xxxxx-xxxx!"}, 400
         except (UniqueViolation, IntegrityError):
                 return jsonify({'Error':'cpf, email ou name already exists'}),409
-        # except KeyError as e:
-        #         jsonify({'error': f'keys must contain{str(e)}'}),400
-#      {
-#     "cpf":"12345678213",
-#     "name":"fatinha",
-#     "email":"fatinha@fatinha",
-#     "college":"Rio grande",
-#     "phone_number":"(14)99880-7191",
-#     "password":2569,
-#     "address":{
-#         "uf":"RJ",
-#         "street":"rua b",
-#         "street_number":103,
-#         "city":"Rezende",
-#         "zip_code":12345679
-#     }
-# }
 
 
 def get_user_by_id(cpf):
@@ -146,7 +128,8 @@ def get_user_by_id(cpf):
                 return jsonify(query),200
 
         except NotFound:
-                return {"msg": "User not Found"},404
+                return {"Error": "User not Found"},404
+
 
 @jwt_required(locations=["headers"])
 def delete_user():
@@ -157,5 +140,5 @@ def delete_user():
                 current_app.db.session.commit()
                 return '', 204
         except NotFound:
-                return {"msg": "User not Found"},404
+                return {"Error": "User not Found"}, 404
 

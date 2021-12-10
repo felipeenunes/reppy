@@ -9,5 +9,4 @@ def init_app(app: Flask):
     from app.models.republic_model import RepublicModel
     from app.models.picture_model import PictureModel
 
-
     Migrate(app, app.db)

@@ -27,7 +27,7 @@ class UserModel(db.Model):
     password_hash = db.Column(db.String, nullable=False)
     address_id = db.Column(db.Integer, db.ForeignKey("addresses.id"))
 
-    address = db.relationship('AddressModel',backref=backref('address',uselist = True, cascade='all, delete-orphan'))
+    address = db.relationship('AddressModel',backref=backref('address',uselist = True), cascade='all, delete-orphan', single_parent=True)
 
     @property
     def password(self):

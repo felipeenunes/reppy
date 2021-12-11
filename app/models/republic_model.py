@@ -18,7 +18,6 @@ class RepublicModel(db.Model):
     updated_at: db.DateTime
     address: AddressModel
     pictures: PictureModel
-    user: UserModel
 
     __tablename__ = "republics"
 

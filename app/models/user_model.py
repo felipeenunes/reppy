@@ -4,16 +4,16 @@ from sqlalchemy.orm import validates
 import re
 from app.exc.exc import EmailError, PhoneError
 from werkzeug.security import generate_password_hash,check_password_hash,gen_salt
-
 from sqlalchemy.orm import backref
+from app.models.address_model import AddressModel
 
 @dataclass
 class UserModel(db.Model):
-
     name:str
     email:str
     college:str
     phone_number:str
+    address: AddressModel
 
     __tablename__ = 'users'
 
@@ -27,7 +27,7 @@ class UserModel(db.Model):
     password_hash = db.Column(db.String, nullable=False)
     address_id = db.Column(db.Integer, db.ForeignKey("addresses.id"))
 
-    address = db.relationship('AddressModel',backref= backref('address',uselist = True))
+    address = db.relationship('AddressModel',backref=backref('address',uselist = True), cascade='all, delete-orphan', single_parent=True)
 
     @property
     def password(self):

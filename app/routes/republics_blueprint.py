@@ -7,7 +7,7 @@ bp = Blueprint("bp_republics", __name__, url_prefix='/republic')
 bp.post("")(create_republic)
 bp.get("")(get_all_republics)
 bp.get("/<int:id>")(get_one)
-bp.patch("/<int:id>")(update_republic)
+bp.patch("/<int:republic_id>")(update_republic)
 bp.delete("/<int:id>")(delete_republic)
 
 

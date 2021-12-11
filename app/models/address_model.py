@@ -7,8 +7,8 @@ from app.exc.exc import InvalidZipCode, InvalidStateInitial
 class AddressModel(db.Model):
     street: str
     street_number: str
-    zip_code: str
     city: str
+    zip_code: str
     uf: str
 
     __tablename__ = 'addresses'
@@ -20,14 +20,14 @@ class AddressModel(db.Model):
     zip_code = db.Column(db.String(8))
     uf = db.Column(db.String(2))
 
-    @validates('zip_code', 'uf')
-    def check_zip_code_length(self, key, zip_code):
-        if len(zip_code) != 8:
-            raise InvalidZipCode('zip code must have 8 digits')
-        
-        if not zip_code.isnumeric():
-            raise InvalidZipCode('zip code must contain only numbers')
+    #@validates('zip_code', 'uf')
+    #def check_zip_code_length(self, key, zip_code):
+    #    if len(zip_code) != 8:
+    #        raise InvalidZipCode('zip code must have 8 digits')
+    #    
+    #    if not zip_code.isnumeric():
+    #        raise InvalidZipCode('zip code must contain only numbers')
 
-    def check_uf_initials(self, key, uf):
-        if len(uf) != 2:
-            raise InvalidStateInitial('uf initials must have 2 letters')
+    #def check_uf_initials(self, key, uf):
+    #    if len(uf) != 2:
+    #        raise InvalidStateInitial('uf initials must have 2 letters')

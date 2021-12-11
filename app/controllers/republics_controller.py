@@ -1,14 +1,19 @@
 from datetime import datetime
 from flask import request, current_app, jsonify
 from flask.json import jsonify
-from sqlalchemy.exc import IntegrityError, DataError
+from sqlalchemy.exc import IntegrityError
 from app.exc.exc import BadRequestError, NotFoundError, InvalidZipCode
 from app.models.republic_model import RepublicModel
 from app.models.picture_model import PictureModel
 from app.configs.database import db
-from app.controllers.address_controller import create_address
+from app.controllers.address_controller import create_address, update_adress
 from datetime import datetime
+from flask_jwt_extended import jwt_required, get_jwt
 
+from app.models.user_model import UserModel
+
+
+@jwt_required(locations=["headers"])
 def create_republic():
     try:
         session = current_app.db.session
@@ -55,8 +60,34 @@ def create_republic():
     except InvalidZipCode as e:
         return {'error': str(e)}, 400
 
-def update_republic(id):
-    ...
+@jwt_required(locations=["headers"])
+def update_republic(republic_id):
+    republic = RepublicModel.query.get(republic_id)
+    owner = UserModel.query.filter_by(cpf = republic.user_cpf).first()
+    print(republic, '\n\n\n\n', owner)
+
+    token_data = get_jwt()
+    user_email = token_data['sub']['email']
+    print('\n\n\n\n', user_email)
+
+    if user_email != owner.email:
+        return {"error": "only the owner can update the republic"}, 401
+
+
+    update_data = request.json
+
+    if 'address' in update_data:
+        new_address = update_data.pop('address')
+        update_adress(new_address, republic.address.id)
+
+    update_data['updated_at'] = datetime.now()
+
+    updated_republic = RepublicModel.query.filter_by(id = republic_id).update(update_data)
+    current_app.db.session.commit()
+
+    updated_republic = RepublicModel.query.get(republic_id)
+
+    return jsonify(updated_republic), 200
 
 
 def get_all_republics():

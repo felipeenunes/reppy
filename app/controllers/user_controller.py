@@ -3,9 +3,9 @@ from sqlalchemy.orm import query
 from werkzeug.exceptions import NotFound
 from app.models.user_model import UserModel
 from app.controllers.address_controller import create_address,address_delete, update_adress
-from app.exc.exc import PhoneError,InavlidQuantyPassword,KeyErrorUser,EmailError
-from sqlalchemy.exc import IntegrityError
-from psycopg2.errors import UniqueViolation
+from app.exc.exc import InvalidKeys, MissingKeys, PhoneError,InvalidQuantityPassword,KeyErrorUser,EmailError
+from sqlalchemy.exc import IntegrityError, ProgrammingError
+from psycopg2.errors import UniqueViolation, NotNullViolation, SyntaxError
 import re
 from flask_jwt_extended import create_access_token,get_jwt,jwt_required
 
@@ -14,15 +14,14 @@ def create_user():
         data = request.get_json()
         data['phone_number']= str(data['phone_number'])
         data["password"] = str(data["password"] )
-        
 
-        keys = ["cpf","name","email","email","college","phone_number","password", "address"]
-        for key in keys:
-            if not key in data or (len(data) > 7): 
-                raise KeyErrorUser("cpf,name,email,phone_number,password,address")
+        keys = {"cpf","name","email","email","college","phone_number","password", "address"}
+        extra_keys = set(data.keys()).difference(keys)
+        if extra_keys:
+                raise InvalidKeys(','.join(list(extra_keys)))
 
         if len(data['password']) < 6:
-           raise InavlidQuantyPassword('Password must contain at least 6 digits')
+           raise InvalidQuantityPassword('Password must contain at least 6 digits')
         
        
         data_address = data.pop("address")
@@ -33,26 +32,34 @@ def create_user():
         current_app.db.session.add(user)
         current_app.db.session.commit()
         
-        # return jsonify({"cpf":user.cpf,"name": user.name, "email":user.email, "college":user.college,"phone_number":user.phone_number, "address":user.address}), 201
-        return jsonify(user)
+        return jsonify(user), 201
     except ValueError:
         address_delete(data['address_id'])
         return {"error":"Field cpf must have 11 characters"},400
     except PhoneError as err:
         address_delete(data['address_id'])
         return jsonify({'error':str(err)}),400
-    except (UniqueViolation, IntegrityError):
-        current_app.db.session.rollback()
-        address_delete(data['address_id'])
-        return jsonify({'error':'cpf, email ou name already exists'}),409
+    except IntegrityError as e: 
+        if isinstance(e.orig, NotNullViolation):
+            current_app.db.session.rollback()
+            address_delete(data['address_id'])
+            return {"error": "missing keys"}, 400
+        if isinstance(e.orig, UniqueViolation):
+            current_app.db.session.rollback()
+            address_delete(data['address_id'])
+            return jsonify({'error':'cpf, email or name already exists'}),409
     except TypeError as e:
         return jsonify({"error":"values must be strings"}),400
-    except InavlidQuantyPassword as e:
+    except InvalidKeys as e:
+        return {"msg": f"invalid keys: {e}"}, 400
+    except InvalidQuantityPassword as e:
         return jsonify({'error': str(e)}),400
-    except (KeyErrorUser, KeyError) as e:
+    except KeyErrorUser as e:
         return jsonify({'error': f'keys must contain{str(e)}'}),400
     except EmailError as e:
         return jsonify({'error':str(e)}),400
+    except MissingKeys as e:
+        return {'error': f'missing the following keys: {e}'}, 400
 
 
 def login_user():
@@ -89,7 +96,7 @@ def update_user():
                 for i in data:
                         if type(data[i]) != str and i != 'address':
                                 raise TypeError
-                if 'cpf' in data: del data['cpf']
+                #if 'cpf' in data: del data['cpf']
                 if 'name' in data: output['name'] = data['name']
                 if 'email' in data: output['email'] = data['email']
                 if 'college' in data: output['college'] = data['college']
@@ -114,19 +121,21 @@ def update_user():
                 if 'password' in data:
                         output.pop('password_hash')
              
-                return output, 202
+                return jsonify(user), 202
         
         except AttributeError:
-                return {"msg": "Invalid UF, try XX"},400
+                return {"error": "invalid UF, try XX"},400
         except NotFound:
-                return {"msg": "User not found"},404
+                return {"error": "user not found"},404
         except TypeError:
-                return {"msg": "All data must be string, except address"},400
+                return {"error": "all data must be string, except address"},400
         except PhoneError:
-                return {"msg": "Incorrect, correct phone format:(xx)xxxxx-xxxx!"}, 400
+                return {"error": "incorrect, correct phone format:(xx)xxxxx-xxxx!"}, 400
         except (UniqueViolation, IntegrityError):
-                return jsonify({'Error':'cpf, email ou name already exists'}),409
-
+                return jsonify({'error':'cpf, email ou name already exists'}),409
+        except ProgrammingError as e:
+                if isinstance(e.orig, SyntaxError):
+                        return {"error": "invalid key on update, of attempt to change cpf"}, 422
 
 def get_user_by_id(cpf):
         try:
@@ -134,7 +143,7 @@ def get_user_by_id(cpf):
                 return jsonify(query),200
 
         except NotFound:
-                return {"Error": "User not Found"},404
+                return {"error": "User not Found"},404
 
 
 @jwt_required(locations=["headers"])

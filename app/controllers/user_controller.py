@@ -146,4 +146,3 @@ def delete_user():
                 return '', 204
         except NotFound:
                 return {"Error": "User not Found"}, 404
-

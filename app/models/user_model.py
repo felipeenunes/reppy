@@ -4,16 +4,16 @@ from sqlalchemy.orm import validates
 import re
 from app.exc.exc import EmailError, PhoneError
 from werkzeug.security import generate_password_hash,check_password_hash,gen_salt
-
 from sqlalchemy.orm import backref
+from app.models.address_model import AddressModel
 
 @dataclass
 class UserModel(db.Model):
-
     name:str
     email:str
     college:str
     phone_number:str
+    address: AddressModel
 
     __tablename__ = 'users'
 

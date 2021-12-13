@@ -20,7 +20,7 @@ class UserModel(db.Model):
     #region properties
 
     cpf = db.Column(db.String, primary_key=True)
-    name = db.Column(db.String, nullable=False, unique=True)
+    name = db.Column(db.String, nullable=False)
     email = db.Column(db.String, nullable=False, unique=True)
     college = db.Column(db.String, nullable=False)
     phone_number = db.Column(db.String, nullable=False)

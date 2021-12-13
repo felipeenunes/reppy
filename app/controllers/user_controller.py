@@ -3,7 +3,7 @@ from sqlalchemy.orm import query
 from werkzeug.exceptions import NotFound
 from app.models.user_model import UserModel
 from app.controllers.address_controller import create_address,address_delete, update_adress
-from app.exc.exc import InvalidKeys, MissingKeys, PhoneError,InvalidQuantityPassword,KeyErrorUser,EmailError,InavlidValue
+from app.exc.exc import InvalidKeys, MissingKeys, PhoneError,InvalidQuantityPassword,KeyErrorUser,EmailError,InvalidValue
 from sqlalchemy.exc import IntegrityError, ProgrammingError
 from psycopg2.errors import UniqueViolation, NotNullViolation, SyntaxError
 import re
@@ -60,7 +60,7 @@ def create_user():
         return jsonify({'error':str(e)}),400
     except MissingKeys as e:
         return {'error': f'missing the following keys: {e}'}, 400
-    except InavlidValue as e:
+    except InvalidValue as e:
         return {"msg": f"invalid values: {e}"}, 400
 
 def login_user():

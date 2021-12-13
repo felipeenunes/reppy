@@ -67,4 +67,3 @@ class UserModel(db.Model):
 
     def check_password(self, password_to_compare):
         return check_password_hash(self.password_hash, password_to_compare)
-

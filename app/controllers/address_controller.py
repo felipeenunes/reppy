@@ -1,5 +1,5 @@
 from flask.json import jsonify
-from app.exc.exc import InvalidKeys, MissingKeys
+from app.exc.exc import InvalidKeys, MissingKeys,InavlidValue
 from app.models.address_model import AddressModel
 from app.configs.database import db
 from flask import current_app, jsonify
@@ -18,6 +18,10 @@ def create_address(address_data):
 
     address_data['street'] = address_data["street"].title()
     address_data['uf'] = address_data["uf"].upper()
+
+    states = ['AC', 'AL', 'AM', 'AP', 'BA', 'CE', 'DF', 'ES', 'GO', 'MA', 'MG', 'MS', 'MT','PA', 'PB', 'PE', 'PI', 'PR', 'RJ', 'RN', 'RO', 'RR', 'RS', 'SC', 'SE', 'SP', 'TO']
+    if not address_data['uf'] in states:
+        raise InavlidValue(','.join(list(address_data['uf'])))
 
     new_address = AddressModel(**address_data)
 

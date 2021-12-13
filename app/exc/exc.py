@@ -30,3 +30,6 @@ class InvalidKeys(Exception):
 
 class MissingKeys(Exception):
     ...
+
+class InavlidValue(Exception):
+    ...

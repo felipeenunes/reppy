@@ -2,12 +2,18 @@ from datetime import datetime
 from flask import request, current_app, jsonify
 from flask.json import jsonify
 from sqlalchemy.exc import IntegrityError
-from app.exc.exc import BadRequestError, NotFoundError
+from app.exc.exc import BadRequestError, NotFoundError, InvalidZipCode
 from app.models.republic_model import RepublicModel
 from app.models.picture_model import PictureModel
 from app.configs.database import db
-from app.controllers.address_controller import create_address
+from app.controllers.address_controller import create_address, update_adress
+from datetime import datetime
+from flask_jwt_extended import jwt_required, get_jwt
+import ipdb
+from app.models.user_model import UserModel
+from app import controllers
 
+@jwt_required(locations=["headers"])
 def create_republic():
     try:
         session = current_app.db.session
@@ -51,14 +57,57 @@ def create_republic():
         return jsonify({"error": "User not found"}), 400
     except BadRequestError as err:
         return jsonify({"error": err.msg}), err.code
+    except InvalidZipCode as e:
+        return {'error': str(e)}, 400
 
-def update_republic():
-    ...
+@jwt_required(locations=["headers"])
+def update_republic(republic_id):
+    republic = RepublicModel.query.get(republic_id)
+    owner = UserModel.query.filter_by(cpf = republic.user_cpf).first()
+    print(republic, '\n\n\n\n', owner)
+
+    token_data = get_jwt()
+    user_email = token_data['sub']['email']
+    print('\n\n\n\n', user_email)
+
+    if user_email != owner.email:
+        return {"error": "only the owner can update the republic"}, 401
+
+
+    update_data = request.json
+
+    if 'address' in update_data:
+        new_address = update_data.pop('address')
+        update_adress(new_address, republic.address.id)
+
+    update_data['updated_at'] = datetime.now()
+
+    updated_republic = RepublicModel.query.filter_by(id = republic_id).update(update_data)
+    current_app.db.session.commit()
+
+    updated_republic = RepublicModel.query.get(republic_id)
+
+    return jsonify(updated_republic), 200
 
 
 def get_all_republics():
-    republics = RepublicModel.query.all()
-    return jsonify(republics)
+    args_dict = {}
+    args = request.args
+    for i in args:
+        args_dict[i] = args[i]
+    if 'min_price' not in args_dict: args_dict["min_price"] = 0
+    if 'max_price' not in args_dict: args_dict["max_price"] = 10000
+    if 'max_residence' not in args_dict: args_dict["max_residence"] = 1000
+    if 'uf' not in args_dict: args_dict['uf'] = ''
+    
+    republics = RepublicModel.query.filter(RepublicModel.price <= args_dict['max_price']).filter(RepublicModel.price >= args_dict['min_price']).filter(RepublicModel.vacancies_qty <= args_dict["max_residence"]).all()
+    republics = controllers.filter_by_uf(republics,args_dict['uf'])
+    
+    if len(republics):
+        return jsonify(republics),200
+    else:
+        return []
+    
 
 def get_one(id: int):
     try:
@@ -66,7 +115,7 @@ def get_one(id: int):
         if not republic:
             raise IndexError
     except IndexError:
-        return {'error': 'republic not found'}, 404
+        return {'Error': 'republic not found'}, 404
     return jsonify(republic)
 
 def delete_republic(id: int):

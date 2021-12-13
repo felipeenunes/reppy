@@ -4,7 +4,6 @@ from dotenv import load_dotenv
 from os import environ
 from app.configs import database, migration,auth_jwt
 
-
 load_dotenv()
 
 def create_app() -> Flask:
@@ -14,7 +13,7 @@ def create_app() -> Flask:
     app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
     app.config["JSON_SORT_KEYS"] = False
     app.config["SECRET_KEY"] = environ.get("SECRET_KEY")
-
+    app.config["JWT_TOKEN_LOCATION"] = ["headers", "cookies", "json", "query_string"]
 
     database.init_app(app)
     migration.init_app(app)

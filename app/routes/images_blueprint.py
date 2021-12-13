@@ -5,4 +5,3 @@ bp = Blueprint('images_bp', __name__, url_prefix='/republic/<int:republic_id>/im
 
 bp.delete("")(delete_picture_img)
 bp.patch("")(patch_picture_img)
-

@@ -4,9 +4,12 @@ import smtplib
 import email.message
 from smtplib import SMTPRecipientsRefused
 from dotenv import load_dotenv
+from flask_jwt_extended import jwt_required
 
 load_dotenv()
 
+
+@jwt_required(locations=["headers"])
 def send_email():
 
     try:
@@ -15,7 +18,6 @@ def send_email():
         print(data["message"])
 
         msg =   data["message"]
-
 
         mail = email.message.Message()
         mail["Subject"] = data["subject"]
@@ -32,5 +34,3 @@ def send_email():
         return {"msg": "email sent"}
     except SMTPRecipientsRefused:
         return {"msg": "error when sending email"}, 400
-
-    

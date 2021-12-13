@@ -50,4 +50,5 @@ def patch_picture_img(republic_id, img_id):
     except KeyError:
         return {"Error": "Must have picture_url data"},400
     except LengthRequired:
-        return {"Error" "Only picture_url must be in json"},400     
+        return {"Error" "Only picture_url must be in json"},400    
+ 

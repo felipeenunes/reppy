@@ -3,7 +3,6 @@ from dataclasses import dataclass
 from sqlalchemy.orm import backref
 from app.models.address_model import AddressModel
 from app.models.picture_model import PictureModel
-from app.models.user_model import UserModel
 from app.exc.exc import BadRequestError
 from datetime import datetime
 

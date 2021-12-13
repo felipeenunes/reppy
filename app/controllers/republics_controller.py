@@ -2,16 +2,14 @@ from datetime import datetime
 from flask import request, current_app, jsonify
 from flask.json import jsonify
 from sqlalchemy.exc import IntegrityError
-from app.exc.exc import BadRequestError, NotFoundError, InvalidZipCode
+from app.exc.exc import BadRequestError, NotFoundError
 from app.models.republic_model import RepublicModel
-from app.models.picture_model import PictureModel
-from app.configs.database import db
 from app.controllers.address_controller import create_address, update_adress
 from datetime import datetime
 from flask_jwt_extended import jwt_required, get_jwt
-import ipdb
 from app.models.user_model import UserModel
 from app import controllers
+
 
 @jwt_required(locations=["headers"])
 def create_republic():
@@ -31,7 +29,6 @@ def create_republic():
         session.flush()
         pictures_list = RepublicModel.create_pictures_list(pictures, session, republic.id)
         session.commit()
-        print(republic)
         return jsonify({
             "id": republic.id,
             "user_email": republic.user_email,
@@ -49,8 +46,7 @@ def create_republic():
         return jsonify({"error": "User not found"}), 400
     except BadRequestError as err:
         return jsonify({"error": err.msg}), err.code
-    except InvalidZipCode as e:
-        return {'error': str(e)}, 400
+
 
 @jwt_required(locations=["headers"])
 def update_republic(republic_id):
@@ -109,6 +105,7 @@ def get_one(id: int):
     except IndexError:
         return {'Error': 'republic not found'}, 404
     return jsonify(republic)
+
 
 def delete_republic(id: int):
     try:

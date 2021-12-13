@@ -6,7 +6,7 @@ from app.models.republic_model import RepublicModel
 from datetime import datetime
 
 
-def delet_picture_img(republic_id, img_id):
+def delete_picture_img(republic_id, img_id):
     query = PictureModel.query.filter_by(id=img_id).first_or_404()
     republic = RepublicModel.query.filter_by(id=republic_id).first()
 

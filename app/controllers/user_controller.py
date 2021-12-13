@@ -23,7 +23,6 @@ def create_user():
         if len(data['password']) < 6:
            raise InvalidQuantityPassword('Password must contain at least 6 digits')
         
-       
         data_address = data.pop("address")
         
         data['address_id'] = create_address(data_address)

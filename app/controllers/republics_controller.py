@@ -9,7 +9,6 @@ from app.configs.database import db
 from app.controllers.address_controller import create_address, update_adress
 from datetime import datetime
 from flask_jwt_extended import jwt_required, get_jwt
-import ipdb
 from app.models.user_model import UserModel
 from app import controllers
 

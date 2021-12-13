@@ -2,10 +2,11 @@ from dataclasses import dataclass
 from app.configs.database import db
 from sqlalchemy.orm import validates
 import re
-from app.exc.exc import EmailError, PhoneError
+from app.exc.exc import  BadRequestWithDeleteError
 from werkzeug.security import generate_password_hash,check_password_hash,gen_salt
 from sqlalchemy.orm import backref
 from app.models.address_model import AddressModel
+from app.controllers.address_controller import address_delete
 
 @dataclass
 class UserModel(db.Model):
@@ -44,7 +45,7 @@ class UserModel(db.Model):
     @validates('cpf')
     def validate_cpf(self,_,cpf):
         if len(cpf) != 11 or not cpf.isnumeric():
-            raise ValueError
+            raise BadRequestWithDeleteError("Field cpf must have 11 characters")
         return cpf
     
     @validates('phone_number')
@@ -52,7 +53,8 @@ class UserModel(db.Model):
         regex = r"\([1-9]\d\)\s?\d{5}-\d{4}"
         match = re.fullmatch(regex,phone)
         if not match:
-            raise PhoneError("Incorrect, correct phone format:(xx)xxxxx-xxxx!")
+           
+            raise BadRequestWithDeleteError("Incorrect, correct phone format:(xx)xxxxx-xxxx!")
         return phone
 
     @validates('email')
@@ -60,7 +62,7 @@ class UserModel(db.Model):
         regex = r"^[\w-]+@[a-z\d]+\.[\w]{3}"
         match = re.fullmatch(regex,email)
         if not match:
-            raise EmailError("user@email.com")
+            raise BadRequestWithDeleteError("user@email.com")
         return email
     
     #endregion

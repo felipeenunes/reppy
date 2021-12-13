@@ -6,7 +6,6 @@ from app.exc.exc import  BadRequestWithDeleteError
 from werkzeug.security import generate_password_hash,check_password_hash,gen_salt
 from sqlalchemy.orm import backref
 from app.models.address_model import AddressModel
-from app.controllers.address_controller import address_delete
 
 @dataclass
 class UserModel(db.Model):
@@ -54,7 +53,7 @@ class UserModel(db.Model):
         match = re.fullmatch(regex,phone)
         if not match:
            
-            raise BadRequestWithDeleteError("Incorrect, correct phone format:(xx)xxxxx-xxxx!")
+            raise BadRequestWithDeleteError("Incorrect format, correct phone format:(xx)xxxxx-xxxx!")
         return phone
 
     @validates('email')

@@ -21,7 +21,7 @@ def create_address(address_data):
 
     states = ['AC', 'AL', 'AM', 'AP', 'BA', 'CE', 'DF', 'ES', 'GO', 'MA', 'MG', 'MS', 'MT','PA', 'PB', 'PE', 'PI', 'PR', 'RJ', 'RN', 'RO', 'RR', 'RS', 'SC', 'SE', 'SP', 'TO']
     if not address_data['uf'] in states:
-        raise BadRequestError(f'Invalid value{",".join(list(address_data["uf"]))}')
+        raise BadRequestError(f'Invalid UF value: {",".join(list(address_data["uf"]))}')
 
     new_address = AddressModel(**address_data)
 

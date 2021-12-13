@@ -50,13 +50,16 @@ def create_republic():
 
 @jwt_required(locations=["headers"])
 def update_republic(republic_id):
-    republic = RepublicModel.query.get(republic_id)
-    owner = UserModel.query.filter_by(cpf = republic.user_cpf).first()
-    print(republic, '\n\n\n\n', owner)
+    print(republic_id)
+    biridin = RepublicModel.query.get(republic_id)
+    if not biridin:
+        print("deu ruim")
+    print(biridin)
+    owner = UserModel.query.filter_by(email = biridin.user_email).first()
+
 
     token_data = get_jwt()
     user_email = token_data['sub']['email']
-    print('\n\n\n\n', user_email)
 
     if user_email != owner.email:
         return {"error": "only the owner can update the republic"}, 401
@@ -66,7 +69,7 @@ def update_republic(republic_id):
 
     if 'address' in update_data:
         new_address = update_data.pop('address')
-        update_adress(new_address, republic.address.id)
+        update_adress(new_address, biridin.address.id)
 
     update_data['updated_at'] = datetime.now()
 

@@ -2,8 +2,6 @@ class PhoneError(Exception):
     ...
 class NonAuthorizedError(Exception):
     ...
-class InvalidQuantityPassword(Exception):
-    ...
 
 class KeyErrorUser(Exception):
     ...
@@ -25,8 +23,15 @@ class InvalidZipCode(Exception):
 class InvalidStateInitial(Exception):
     ...
 
-class InvalidKeys(Exception):
-    ...
+
 
 class MissingKeys(Exception):
     ...
+
+class InvalidValue(Exception):
+    ...
+
+class BadRequestWithDeleteError(Exception):
+    def __init__(self, msg):
+        self.msg = msg
+        self.code = 400

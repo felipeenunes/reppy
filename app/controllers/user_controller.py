@@ -3,7 +3,7 @@ from sqlalchemy.orm import query
 from werkzeug.exceptions import NotFound
 from app.models.user_model import UserModel
 from app.controllers.address_controller import create_address,address_delete, update_adress
-from app.exc.exc import InvalidKeys, MissingKeys, PhoneError,InvalidQuantityPassword,KeyErrorUser,EmailError
+from app.exc.exc import KeyErrorUser,BadRequestError,NotFoundError,BadRequestWithDeleteError
 from sqlalchemy.exc import IntegrityError, ProgrammingError
 from psycopg2.errors import UniqueViolation, NotNullViolation, SyntaxError
 import re
@@ -15,13 +15,13 @@ def create_user():
         data['phone_number']= str(data['phone_number'])
         data["password"] = str(data["password"] )
 
-        keys = {"cpf","name","email","email","college","phone_number","password", "address"}
+        keys = {"cpf","name","email","college","phone_number","password", "address"}
         extra_keys = set(data.keys()).difference(keys)
         if extra_keys:
-                raise InvalidKeys(','.join(list(extra_keys)))
+                raise BadRequestError(f'Invalid keys {list(extra_keys)}')
 
         if len(data['password']) < 6:
-           raise InvalidQuantityPassword('Password must contain at least 6 digits')
+           raise BadRequestError('Password must contain at least 6 digits')
         
        
         data_address = data.pop("address")
@@ -33,12 +33,10 @@ def create_user():
         current_app.db.session.commit()
         
         return jsonify(user), 201
-    except ValueError:
+
+    except BadRequestWithDeleteError as e:
         address_delete(data['address_id'])
-        return {"error":"Field cpf must have 11 characters"},400
-    except PhoneError as err:
-        address_delete(data['address_id'])
-        return jsonify({'error':str(err)}),400
+        return {"error": e.msg}, e.code
     except IntegrityError as e: 
         if isinstance(e.orig, NotNullViolation):
             current_app.db.session.rollback()
@@ -48,40 +46,38 @@ def create_user():
             current_app.db.session.rollback()
             address_delete(data['address_id'])
             return jsonify({'error':'cpf, email or name already exists'}),409
-    except TypeError as e:
-        return jsonify({"error":"values must be strings"}),400
-    except InvalidKeys as e:
-        return {"msg": f"invalid keys: {e}"}, 400
-    except InvalidQuantityPassword as e:
-        return jsonify({'error': str(e)}),400
-    except KeyErrorUser as e:
-        return jsonify({'error': f'keys must contain{str(e)}'}),400
-    except EmailError as e:
-        return jsonify({'error':str(e)}),400
-    except MissingKeys as e:
-        return {'error': f'missing the following keys: {e}'}, 400
-
-
+    except KeyError:
+        return jsonify({'Error':'Email and password must be given only'}),400
+    except BadRequestError as e:
+        return {"error": e.msg}, e.code
+  
 def login_user():
 
     data = request.get_json()
 
     try:
-        if 'email' in data and 'password' in data and len(data) == 2:
-            user = UserModel.query.filter_by(email=data['email']).first()
-            if user is None:
-                    raise KeyErrorUser('User not found')
-            if user.check_password(data['password']):
+        keys = {"email","password"}
+        extra_keys = set(data.keys()).difference(keys)
+        if extra_keys:
+                raise BadRequestError(f'{",".join(list(extra_keys))}')
+       
+        user = UserModel.query.filter_by(email=data['email']).first()
+        if user is None:
+                raise KeyErrorUser('User not found')
+        if user.check_password(data['password']):
                 access_token = create_access_token(user)
                 return jsonify({'token': access_token}),200
             
-            return jsonify({'Error':'Email and password incorrect'}),401
-        else : raise KeyError
+        return jsonify({'Error':'Email and password incorrect'}),401
+        
     except KeyError:
         return jsonify({'Error':'Email and password must be given only'}),400
-    except KeyErrorUser as e:
-            return jsonify({'Error':str(e)}),404
-
+    except NotFoundError as e:
+            return jsonify({"error": e.msg}), e.code
+    except TypeError:
+            return  jsonify({'Error':'Email and password must be given only'}),400
+    except BadRequestError as e:
+        return jsonify({"error": e.msg}), e.code
 
 
 

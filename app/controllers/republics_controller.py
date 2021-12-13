@@ -31,7 +31,6 @@ def create_republic():
         session.flush()
         pictures_list = RepublicModel.create_pictures_list(pictures, session, republic.id)
         session.commit()
-        print(republic)
         return jsonify({
             "id": republic.id,
             "user_email": republic.user_email,

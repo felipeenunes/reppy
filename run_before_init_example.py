@@ -2,7 +2,7 @@ import psycopg2
 import os
 from psycopg2.extensions import ISOLATION_LEVEL_AUTOCOMMIT
 
-conn = psycopg2.connect(user="rodrigo", password="1234", host="localhost", port="5432")
+conn = psycopg2.connect(user="felipe", password="1234", host="localhost", port="5432")
 conn.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
 cursor = conn.cursor()
 
@@ -10,7 +10,7 @@ cursor.execute("DROP DATABASE IF EXISTS reppy;")
 cursor.execute("CREATE DATABASE reppy;")
 cursor.close()
 conn.close()
-conn = psycopg2.connect(database="reppy", user="rodrigo", password="1234", host="localhost", port="5432")
+conn = psycopg2.connect(database="reppy", user="felipe", password="1234", host="localhost", port="5432")
 os.system("flask db upgrade")
 cursor = conn.cursor()
 
@@ -39,13 +39,13 @@ cursor.execute("""
 
 cursor.execute("""
     INSERT INTO
-        republics ("name", description, vacancies_qty, max_occupancy, price, created_at, updated_at, user_cpf, address_id)
+        republics ("name", description, vacancies_qty, max_occupancy, price, created_at, updated_at, user_email, address_id)
     VALUES
-        ('Republica Kanil', 'Republica para cachorros e cachorras', 3, 10, 350, '08/12/2021', '08/12/2021', '12345678901', 1),
-        ('Republica Sarcóphagos', 'Republica para sarcófagos e mafagafinhos', 2, 15, 400, '08/12/2021', '08/12/2021', '12345678901', 2),
-        ('Republica Detran', 'Republica para detrons e detox', 1, 5, 120, '08/12/2021', '08/12/2021', '12345678902', 3),
-        ('Republica Mexico Delas', 'Republica para mexicanos e guatemaltecos', 4, 11, 500, '08/12/2021', '08/12/2021', '12345678903', 4),
-        ('Republica 100 Noção', 'Republica para 100s e noções', 10, 20, 720, '08/12/2021', '08/12/2021', '12345678904', 5);
+        ('Republica Kanil', 'Republica para cachorros e cachorras', 3, 10, 350, '08/12/2021', '08/12/2021', 'camilo-renato@email.com', 1),
+        ('Republica Sarcóphagos', 'Republica para sarcófagos e mafagafinhos', 2, 15, 400, '08/12/2021', '08/12/2021', 'abmendes@email.com', 2),
+        ('Republica Detran', 'Republica para detrons e detox', 1, 5, 120, '08/12/2021', '08/12/2021', 'mandinhaseb@email.com', 3),
+        ('Republica Mexico Delas', 'Republica para mexicanos e guatemaltecos', 4, 11, 500, '08/12/2021', '08/12/2021', 'abmendes@email.com', 4),
+        ('Republica 100 Noção', 'Republica para 100s e noções', 10, 20, 720, '08/12/2021', '08/12/2021', 'mandinhaseb@email.com', 5);
 """)
 
 cursor.execute("""

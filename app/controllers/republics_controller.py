@@ -18,31 +18,23 @@ def create_republic():
     try:
         session = current_app.db.session
         data = request.get_json()
-        required_keys = ["name", "description", "price", "vacancies_qty", "max_occupancy", "pictures", "address", "user_cpf"]
-        new_data = {}
-        for key in required_keys:
-            if not key in data:
-                raise BadRequestError("Required keys not satisfied")
-            new_data[key] = data[key]
+        user_token = get_jwt()
+        user_email = user_token['sub']['email']
+        user = UserModel.query.filter_by(email=user_email).first()
+        data['user_email'] = user.email
+        new_data = RepublicModel.verify_keys(data)
         pictures = new_data.pop('pictures')
         address = new_data.pop('address')
         new_data['address_id'] = create_address(address)
-        new_data['created_at'] = datetime.now()
-        new_data['updated_at'] = datetime.now()
         republic = RepublicModel(**new_data)
         session.add(republic)
         session.flush()
-        pictures_list = []
-        for pic in pictures:
-            pic['rep_id']=republic.id
-            new_pic = PictureModel(**pic)
-            session.add(new_pic)
-            added_picture = PictureModel.query.filter_by(picture_url=pic['picture_url']).first()
-            pictures_list.append(added_picture)
+        pictures_list = RepublicModel.create_pictures_list(pictures, session, republic.id)
         session.commit()
+        print(republic)
         return jsonify({
             "id": republic.id,
-            "user_cpf": republic.user_cpf,
+            "user_email": republic.user_email,
             "name": republic.name,
             "description": republic.description,
             "vacancies_qty": republic.vacancies_qty,

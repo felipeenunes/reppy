@@ -9,9 +9,9 @@ from app.configs.database import db
 from app.controllers.address_controller import create_address, update_adress
 from datetime import datetime
 from flask_jwt_extended import jwt_required, get_jwt
-
+import ipdb
 from app.models.user_model import UserModel
-
+from app import controllers
 
 @jwt_required(locations=["headers"])
 def create_republic():
@@ -91,8 +91,23 @@ def update_republic(republic_id):
 
 
 def get_all_republics():
-    republics = RepublicModel.query.all()
-    return jsonify(republics)
+    args_dict = {}
+    args = request.args
+    for i in args:
+        args_dict[i] = args[i]
+    if 'min_price' not in args_dict: args_dict["min_price"] = 0
+    if 'max_price' not in args_dict: args_dict["max_price"] = 10000
+    if 'max_residence' not in args_dict: args_dict["max_residence"] = 1000
+    if 'uf' not in args_dict: args_dict['uf'] = ''
+    
+    republics = RepublicModel.query.filter(RepublicModel.price <= args_dict['max_price']).filter(RepublicModel.price >= args_dict['min_price']).filter(RepublicModel.vacancies_qty <= args_dict["max_residence"]).all()
+    republics = controllers.filter_by_uf(republics,args_dict['uf'])
+    
+    if len(republics):
+        return jsonify(republics),200
+    else:
+        return []
+    
 
 def get_one(id: int):
     try:

@@ -16,6 +16,8 @@ def create_republic():
     try:
         session = current_app.db.session
         data = request.get_json()
+        required_keys = {"name":str, "description":str, "price":int, "vacancies_qty":int, "max_occupancy":int, "pictures":list, "address":dict}
+        controllers.verification(data, required_keys)
         user_token = get_jwt()
         user_email = user_token['sub']['email']
         user = UserModel.query.filter_by(email=user_email).first()
@@ -50,32 +52,38 @@ def create_republic():
 
 @jwt_required(locations=["headers"])
 def update_republic(republic_id):
-    republic = RepublicModel.query.get(republic_id)
-    owner = UserModel.query.filter_by(cpf = republic.user_cpf).first()
-    print(republic, '\n\n\n\n', owner)
+    try: 
+        republic = RepublicModel.query.get(republic_id)
+        owner = UserModel.query.filter_by(email = republic.user_email).first()
+        
 
-    token_data = get_jwt()
-    user_email = token_data['sub']['email']
-    print('\n\n\n\n', user_email)
+        token_data = get_jwt()
+        user_email = token_data['sub']['email']
+    
 
-    if user_email != owner.email:
-        return {"error": "only the owner can update the republic"}, 401
+        if user_email != owner.email:
+            return {"error": "only the owner can update the republic"}, 401
 
+        update_data = request.json
+        keys = {"name":str, "description":str, "price":int, "vacancies_qty":int, "max_occupancy":int, "pictures":list, "address":dict}
+        required_keys = {key:value for key,value in keys.items() if key in update_data}
+ 
+        controllers.verification(update_data, required_keys)
 
-    update_data = request.json
+        if 'address' in update_data:
+            new_address = update_data.pop('address')
+            update_adress(new_address, republic.address.id)
 
-    if 'address' in update_data:
-        new_address = update_data.pop('address')
-        update_adress(new_address, republic.address.id)
+        update_data['updated_at'] = datetime.now()
 
-    update_data['updated_at'] = datetime.now()
+        updated_republic = RepublicModel.query.filter_by(id = republic_id).update(update_data)
+        current_app.db.session.commit()
 
-    updated_republic = RepublicModel.query.filter_by(id = republic_id).update(update_data)
-    current_app.db.session.commit()
+        updated_republic = RepublicModel.query.get(republic_id)
 
-    updated_republic = RepublicModel.query.get(republic_id)
-
-    return jsonify(updated_republic), 200
+        return jsonify(updated_republic), 200
+    except BadRequestError as err:
+        return jsonify({"error": err.msg}), err.code
 
 
 def get_all_republics():
@@ -94,7 +102,7 @@ def get_all_republics():
     if len(republics):
         return jsonify(republics),200
     else:
-        return []
+        return jsonify([])
     
 
 def get_one(id: int):
@@ -107,6 +115,7 @@ def get_one(id: int):
     return jsonify(republic)
 
 
+@jwt_required(locations=["headers"])
 def delete_republic(id: int):
     try:
         session = current_app.db.session

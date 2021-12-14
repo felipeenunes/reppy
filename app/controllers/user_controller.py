@@ -8,33 +8,30 @@ from sqlalchemy.exc import IntegrityError, ProgrammingError
 from psycopg2.errors import UniqueViolation, NotNullViolation, SyntaxError
 import re
 from flask_jwt_extended import create_access_token,get_jwt,jwt_required
+from . import verification
 
 
 def create_user():
     try:
         data = request.get_json()
+        required_keys = {"cpf":str,"name":str,"email":str,"college":str,"phone_number":str,"password":str, "address":dict}
+        new_data={}
+        verification(data,required_keys)
         data['phone_number']= str(data['phone_number'])
         data["password"] = str(data["password"] )
-        required_keys = {"cpf","name","email","college","phone_number","password", "address"}
-        new_data={}
-        missing_keys=[]
-        for key in required_keys:
-                if not key in data:
-                        missing_keys.append(key)
-        if missing_keys: raise BadRequestError(f'Required keys not found: {missing_keys}')
         for key in data:
                 if key in required_keys:
                         new_data[key] = data[key]    
-        if len(data['password']) < 6:
+        if len(new_data['password']) < 6:
            raise BadRequestError('Password must contain at least 6 digits')    
-        data_address = data.pop("address")
-        data['address_id'] = create_address(data_address)
-        user = UserModel(**data)
+        data_address = new_data.pop("address")
+        new_data['address_id'] = create_address(data_address)
+        user = UserModel(**new_data)
         current_app.db.session.add(user)
         current_app.db.session.commit()
         return jsonify(user), 201
     except BadRequestWithDeleteError as e:
-        address_delete(data['address_id'])
+        address_delete(new_data['address_id'])
         return {"error": e.msg}, e.code
     except IntegrityError as e: 
         if isinstance(e.orig, NotNullViolation):
@@ -43,10 +40,8 @@ def create_user():
             return {"error": "missing keys"}, 400
         if isinstance(e.orig, UniqueViolation):
             current_app.db.session.rollback()
-            address_delete(data['address_id'])
-            return jsonify({'error':'cpf, email or name already exists'}),409
-    except KeyError:
-        return jsonify({'Error':'Email and password must be given only'}),400
+            address_delete(new_data['address_id'])
+            return jsonify({'error':'cpf e email already exists'}),409
     except BadRequestError as e:
         return {"error": e.msg}, e.code
   
@@ -55,19 +50,22 @@ def login_user():
 
     data = request.get_json()
     try:
-        keys = {"email","password"}
-        extra_keys = set(data.keys()).difference(keys)
-        if extra_keys:
-                raise BadRequestError(f'{",".join(list(extra_keys))}')     
-        user = UserModel.query.filter_by(email=data['email']).first()
+        keys = {"email":str,"password":str}
+        new_data={}
+        verification(data,keys)
+        for key in data:
+                if key in keys:
+                        new_data[key] = data[key]    
+        user = UserModel.query.filter_by(email=new_data['email']).first()
         if user is None:
                 raise KeyErrorUser('User not found')
-        if user.check_password(data['password']):
+        new_data['password'] = str(data['password'])
+        if user.check_password(new_data['password']):
                 access_token = create_access_token(user)
                 return jsonify({'token': access_token}),200    
         return jsonify({'Error':'Email and password incorrect'}),401
-    except KeyError:
-        return jsonify({'error':'Email and password must be given only'}),400
+    except ProgrammingError:
+        return jsonify({'error':'Email and password value must be string'}),422
     except NotFoundError as e:
             return jsonify({"error": e.msg}), e.code
     except TypeError:

@@ -29,7 +29,7 @@ def create_address(address_data):
 def update_adress(address_data, address_id):
     if 'uf' in address_data: address_data['uf'] = address_data['uf'].upper()
     if 'street' in address_data: address_data['street'] = address_data['street'].title()
-
+    
     updated_address = AddressModel.query.filter_by(id=address_id).update(address_data)
     current_app.db.session.commit()
 

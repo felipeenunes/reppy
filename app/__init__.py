@@ -6,6 +6,7 @@ from app.configs import database, migration,auth_jwt
 
 load_dotenv()
 
+
 def create_app() -> Flask:
     app = Flask(__name__)
 

@@ -4,6 +4,7 @@ from dataclasses import dataclass
 
 @dataclass
 class PictureModel(db.Model):
+    id:int
     picture_url: str
 
     __tablename__ = 'pictures'

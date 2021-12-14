@@ -60,7 +60,7 @@ class UserModel(db.Model):
         regex = r"^[\w-]+@[a-z\d]+\.[\w]{3}"
         match = re.fullmatch(regex,email)
         if not match:
-            raise BadRequestWithDeleteError("user@email.com")
+            raise BadRequestWithDeleteError("Incorrect format, correct email format: user@email.com")
         return email
 
 

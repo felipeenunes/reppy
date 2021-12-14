@@ -8,15 +8,6 @@ from . import verification
 def create_address(address_data):
     keys = {'street':str,'street_number':str,'city':str,'uf':str,'zip_code':str}
 
-    # missing_keys = list(keys.difference(set(address_data.keys())))
-
-    # if missing_keys:
-    #     raise BadRequestError(f'missing the following keys: {list(missing_keys)}')
-
-    # invalid_keys = set(address_data.keys()).difference(keys)
-    # if invalid_keys:
-    #     raise BadRequestError(f'Invalid keys {",".join(list(invalid_keys))}')
-
     new_data={}
     verification(address_data,keys)
        

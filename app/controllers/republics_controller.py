@@ -1,7 +1,7 @@
 from datetime import datetime
 from flask import request, current_app, jsonify
 from flask.json import jsonify
-from sqlalchemy.exc import IntegrityError
+from sqlalchemy.exc import IntegrityError, InvalidRequestError, StatementError
 from app.exc.exc import BadRequestError, NotFoundError
 from app.models.republic_model import RepublicModel
 from app.controllers.address_controller import create_address, update_adress
@@ -9,6 +9,7 @@ from datetime import datetime
 from flask_jwt_extended import jwt_required, get_jwt
 from app.models.user_model import UserModel
 from app import controllers
+from app.controllers.extra_controller import create_extra, update_extra
 
 
 @jwt_required(locations=["headers"])
@@ -20,17 +21,25 @@ def create_republic():
         controllers.verification(data, required_keys)
         user_token = get_jwt()
         user_email = user_token['sub']['email']
+
         user = UserModel.query.filter_by(email=user_email).first()
         data['user_email'] = user.email
+
         new_data = RepublicModel.verify_keys(data)
         pictures = new_data.pop('pictures')
         address = new_data.pop('address')
         new_data['address_id'] = create_address(address)
+        extras = data.pop('extras')
+
         republic = RepublicModel(**new_data)
+        
+
         session.add(republic)
         session.flush()
         pictures_list = RepublicModel.create_pictures_list(pictures, session, republic.id)
         session.commit()
+        extras['republic_id'] = republic.id
+        list_extra = create_extra(extras)
         return jsonify({
             "id": republic.id,
             "user_email": republic.user_email,
@@ -43,11 +52,19 @@ def create_republic():
             "update_at": republic.updated_at,
             "address_id": republic.address_id,
             "pictures": pictures_list,
-        })
+            "extras": list_extra
+        }), 201
     except IntegrityError:
-        return jsonify({"error": "User not found"}), 400
+       return jsonify({"msg": "user not found"}), 400
     except BadRequestError as err:
-        return jsonify({"error": err.msg}), err.code
+        return jsonify({"msg": err.msg}), err.code
+    except TypeError:
+        return {"msg": "invalid extra in request"}, 422
+    except KeyError:
+        return {"msg": "missing extras"}, 400
+    except StatementError:
+        return {"msg": "extra element is not boolean"}, 422
+
 
 
 @jwt_required(locations=["headers"])
@@ -74,6 +91,11 @@ def update_republic(republic_id):
             new_address = update_data.pop('address')
             update_adress(new_address, republic.address.id)
 
+        if 'extras' in update_data:
+            updated_extras = update_data.pop('extras')
+            list_extra = update_extra(updated_extras, republic.id)
+
+
         update_data['updated_at'] = datetime.now()
 
         updated_republic = RepublicModel.query.filter_by(id = republic_id).update(update_data)
@@ -81,9 +103,29 @@ def update_republic(republic_id):
 
         updated_republic = RepublicModel.query.get(republic_id)
 
-        return jsonify(updated_republic), 200
+        # return jsonify(updated_republic), 200
+        return jsonify({
+            "id": republic.id,
+            "user_email": republic.user_email,
+            "name": republic.name,
+            "description": republic.description,
+            "vacancies_qty": republic.vacancies_qty,
+            "max_occupancy": republic.max_occupancy,
+            "price": republic.price,
+            "created_at": republic.created_at,
+            "update_at": republic.updated_at,
+            "address_id": republic.address_id,
+            #"pictures": pictures_list,
+            "extras": list_extra
+        }), 201
     except BadRequestError as err:
         return jsonify({"error": err.msg}), err.code
+    except InvalidRequestError:
+        return {"msg": "invalid keys to be updated"}, 400
+    except AttributeError:
+        return {"msg": "republic not found"}, 404
+    except StatementError:
+        return {"msg": "extra element is not boolean"}, 422
 
 
 def get_all_republics():

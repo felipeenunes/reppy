@@ -72,6 +72,8 @@ def login_user():
             return  jsonify({'error':'Email and password must be given only'}),400
     except BadRequestError as e:
         return jsonify({"error": e.msg}), e.code
+    except KeyErrorUser as e:
+        return {"msg": str(e)}, 404
 
 
 @jwt_required(locations=["headers"])

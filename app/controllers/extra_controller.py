@@ -24,7 +24,7 @@ def complete_extras_with_false(extras):
 
     return extras
 
-# @jwt_required(locations=["headers"])
+@jwt_required(locations=["headers"])
 def create_extra(extras):
     extras = complete_extras_with_false(extras)
 
@@ -37,7 +37,7 @@ def create_extra(extras):
     return new_extra_list
 
 
-# @jwt_required(locations=["headers"])
+@jwt_required(locations=["headers"])
 def update_extra(update_data, updating_republic_id):
     update_data = complete_extras_with_false(update_data)
 

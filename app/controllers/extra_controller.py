@@ -4,55 +4,48 @@ from flask_jwt_extended import jwt_required
 
 def filter_extras_true(extras):
     extras = extras.__dict__
-    del extras['_sa_instance_state']
-    del extras['id']
-    del extras['republic_id']
+
+    if 'id' in extras: del extras['id']
 
     extras_list = []
     for key, value in extras.items():
-        if value:
+        print(key, value)
+        if value and key != '_sa_instance_state' and key != 'republic_id':
             extras_list.append(key)
-
     return extras_list
 
 
-def get_all():
-    extras = ExtraModel.query.all()
-    return jsonify(extras), 200
+def complete_extras_with_false(extras):
+    extras_keys = ['animals_allowed', 'parties_allowed', 'wifi', 'swiming_pool','grill']
 
+    for key in extras_keys:
+        if key not in extras:
+            extras[key] = False
 
-def get_specific_extra(extra_id):
-    extras = ExtraModel.query.filter_by(id = extra_id).first()
-
-    extras_list = filter_extras_true(extras)
-
-    return {"msg": extras_list}, 200
-
+    return extras
 
 # @jwt_required(locations=["headers"])
 def create_extra(extras):
-    new_extra = ExtraModel(extras)
+    extras = complete_extras_with_false(extras)
 
+    new_extra = ExtraModel(**extras)
+
+    new_extra_list = filter_extras_true(new_extra)
     current_app.db.session.add(new_extra)
     current_app.db.session.commit()
- # chamar o true filter, e retonar
-    return new_extra
 
-def update_extra(extra_id):
-    update_data = request.json
+    return new_extra_list
+
+
+# @jwt_required(locations=["headers"])
+def update_extra(update_data, updating_republic_id):
+    update_data = complete_extras_with_false(update_data)
+
+    updated_data = ExtraModel.query.filter_by(republic_id = updating_republic_id).update(update_data)
+
+    current_app.db.session.commit()
+
+    updated_data = ExtraModel.query.filter_by(republic_id = updating_republic_id).first()
+    updated_data_list = filter_extras_true(updated_data)
     
-    updated_data = ExtraModel.query.filter_by(id = extra_id).update(update_data)
-
-    current_app.db.session.commit()
-
-    updated_data = ExtraModel.query.filter_by(id = extra_id).first()
-
-    return jsonify(updated_data), 200
-
-def delete_extra(extra_id):
-    to_be_deleted = ExtraModel.query.filter_by(id = extra_id).first()
-
-    current_app.db.session.delete(to_be_deleted)
-    current_app.db.session.commit()
-
-    return {}, 204
+    return updated_data_list

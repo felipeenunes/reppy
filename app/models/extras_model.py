@@ -12,7 +12,6 @@ class ExtraModel(db.Model):
     swiming_pool: bool
     grill: bool
 
-
     __tablename__ = 'extras'
 
     id = db.Column(db.Integer, primary_key = True)
@@ -23,4 +22,4 @@ class ExtraModel(db.Model):
     grill = db.Column(db.Boolean, nullable = False)
     republic_id = db.Column(db.Integer, db.ForeignKey('republics.id'), unique = True)
 
-    republic = db.relationship('RepublicModel', backref = backref('extra', uselist = False), uselist = False)
+    republic = db.relationship('RepublicModel', backref = backref('extra', uselist = False, cascade = 'all, delete-orphan'), uselist = False)

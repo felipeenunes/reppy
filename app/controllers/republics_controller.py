@@ -1,7 +1,7 @@
 from datetime import datetime
 from flask import request, current_app, jsonify
 from flask.json import jsonify
-from sqlalchemy.exc import IntegrityError
+from sqlalchemy.exc import IntegrityError, InvalidRequestError
 from app.exc.exc import BadRequestError, NotFoundError
 from app.models.republic_model import RepublicModel
 from app.controllers.address_controller import create_address, update_adress
@@ -9,6 +9,7 @@ from datetime import datetime
 from flask_jwt_extended import jwt_required, get_jwt
 from app.models.user_model import UserModel
 from app import controllers
+from app.controllers.extra_controller import create_extra
 
 
 @jwt_required(locations=["headers"])
@@ -20,13 +21,20 @@ def create_republic():
         controllers.verification(data, required_keys)
         user_token = get_jwt()
         user_email = user_token['sub']['email']
+
         user = UserModel.query.filter_by(email=user_email).first()
         data['user_email'] = user.email
+
         new_data = RepublicModel.verify_keys(data)
         pictures = new_data.pop('pictures')
         address = new_data.pop('address')
         new_data['address_id'] = create_address(address)
+        extras = new_data.pop('extras')
         republic = RepublicModel(**new_data)
+        
+        extras['republic_id'] = republic.id
+        extra_model = create_extra(extras)
+
         session.add(republic)
         session.flush()
         pictures_list = RepublicModel.create_pictures_list(pictures, session, republic.id)
@@ -84,6 +92,10 @@ def update_republic(republic_id):
         return jsonify(updated_republic), 200
     except BadRequestError as err:
         return jsonify({"error": err.msg}), err.code
+    except InvalidRequestError:
+        return {"msg": "invalid keys to be updated"}, 400
+    except AttributeError:
+        return {"msg": "republic not found"}, 404
 
 
 def get_all_republics():

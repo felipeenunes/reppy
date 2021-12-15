@@ -1,5 +1,3 @@
-# calculadora
-
 # REPPY
 
     Este projeto é uma aplicação sem fins lucrativos e totalmente estudantil.

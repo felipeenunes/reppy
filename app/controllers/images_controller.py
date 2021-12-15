@@ -4,11 +4,20 @@ from app.exc.exc import NonAuthorizedError
 from app.models.picture_model import PictureModel
 from app.models.republic_model import RepublicModel
 from datetime import datetime
+from flask_jwt_extended import jwt_required, get_jwt
 
 
+@jwt_required(locations=["headers"])
 def delete_picture_img(republic_id, img_id):
     query = PictureModel.query.filter_by(id=img_id).first_or_404()
     republic = RepublicModel.query.filter_by(id=republic_id).first()
+
+    token_data = get_jwt()
+    user_email = token_data['sub']['email']
+   
+
+    if user_email != republic.user_email:
+        return {"error": "only the owner can update the republic"}, 401
 
     try:
         if republic_id == query.rep_id:
@@ -27,9 +36,19 @@ def delete_picture_img(republic_id, img_id):
     except NotFound:
         return {"Error": "Img not Found"}
 
+
+@jwt_required(locations=["headers"])
 def patch_picture_img(republic_id, img_id):
     query = PictureModel.query.filter_by(id=img_id).first_or_404()
     republic = RepublicModel.query.filter_by(id=republic_id).first()
+
+    token_data = get_jwt()
+    user_email = token_data['sub']['email']
+   
+
+    if user_email != republic.user_email:
+        return {"error": "only the owner can update the republic"}, 401
+
     try:
         if republic_id == query.rep_id:
             data = request.get_json()

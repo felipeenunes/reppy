@@ -73,8 +73,7 @@ def login_user():
     except BadRequestError as e:
         return jsonify({"error": e.msg}), e.code
     except KeyErrorUser as e:
-            return {"error": str(e)}, 404
-
+        return {"msg": str(e)}, 404
 
 
 @jwt_required(locations=["headers"])

@@ -1,10 +1,11 @@
-from flask import request, current_app
+from flask import request, current_app, jsonify
 from werkzeug.exceptions import LengthRequired, NotFound
-from app.exc.exc import NonAuthorizedError
+from app.exc.exc import BadRequestError, NonAuthorizedError
 from app.models.picture_model import PictureModel
 from app.models.republic_model import RepublicModel
 from datetime import datetime
 from flask_jwt_extended import jwt_required, get_jwt
+from . import verification
 
 
 @jwt_required(locations=["headers"])
@@ -39,6 +40,8 @@ def delete_picture_img(republic_id, img_id):
 
 @jwt_required(locations=["headers"])
 def patch_picture_img(republic_id, img_id):
+    keys = {"picture_url": str}
+
     query = PictureModel.query.filter_by(id=img_id).first_or_404()
     republic = RepublicModel.query.filter_by(id=republic_id).first()
 
@@ -52,6 +55,7 @@ def patch_picture_img(republic_id, img_id):
     try:
         if republic_id == query.rep_id:
             data = request.get_json()
+            verification(data, keys)
             if len(data) > 1: raise LengthRequired
             data['picture_url']
             for key, value in data.items():
@@ -63,11 +67,13 @@ def patch_picture_img(republic_id, img_id):
             return {"picture_url" : data['picture_url']}
         raise NonAuthorizedError
     except NotFound:
-        return {"Error": "Img not Found"},404
+        return {"msg": "Img not Found"},404
     except NonAuthorizedError:
-        return {"Error": "Non Authorized"},401
+        return {"msg": "Non Authorized"},401
     except KeyError:
-        return {"Error": "Must have picture_url data"},400
+        return {"msg": "Must have picture_url data"},400
     except LengthRequired:
-        return {"Error" "Only picture_url must be in json"},400    
+        return {"msg" "Only picture_url must be in json"},400 
+    except BadRequestError as err:
+        return jsonify({"error": err.msg}), err.code 
  

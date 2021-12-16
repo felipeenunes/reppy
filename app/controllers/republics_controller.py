@@ -10,7 +10,7 @@ from datetime import datetime
 from flask_jwt_extended import jwt_required, get_jwt
 from app.models.user_model import UserModel
 from app import controllers
-from app.controllers.extra_controller import create_extra, update_extra
+from app.controllers.extra_controller import create_extra, update_extra, get_extra_from_republic
 
 
 @jwt_required(locations=["headers"])
@@ -105,20 +105,8 @@ def update_republic(republic_id):
         if not list_extras:
             list_extras = []
 
+        return {}, 204
 
-        return jsonify({
-            "id": republic.id,
-            "user_email": republic.user_email,
-            "name": republic.name,
-            "description": republic.description,
-            "vacancies_qty": republic.vacancies_qty,
-            "max_occupancy": republic.max_occupancy,
-            "price": republic.price,
-            "created_at": republic.created_at,
-            "update_at": republic.updated_at,
-            "address_id": republic.address_id,
-            "extras": list_extras
-        }), 201
     except BadRequestError as err:
         return jsonify({"error": err.msg}), err.code
     except InvalidRequestError:
@@ -153,9 +141,24 @@ def get_one(id: int):
         republic = RepublicModel.query.get(id)
         if not republic:
             raise IndexError
+        list_extra = get_extra_from_republic(republic.id)
     except IndexError:
         return {'Error': 'republic not found'}, 404
-    return jsonify(republic)
+    # return jsonify(republic)
+    return jsonify({
+            "id": republic.id,
+            "user_email": republic.user_email,
+            "name": republic.name,
+            "description": republic.description,
+            "vacancies_qty": republic.vacancies_qty,
+            "max_occupancy": republic.max_occupancy,
+            "price": republic.price,
+            "created_at": republic.created_at,
+            "update_at": republic.updated_at,
+            "address_id": republic.address_id,
+            "pictures": republic.pictures,
+            "extras": list_extra
+        }), 201
 
 
 @jwt_required(locations=["headers"])

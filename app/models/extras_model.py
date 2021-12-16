@@ -5,12 +5,6 @@ from dataclasses import dataclass
 
 @dataclass
 class ExtraModel(db.Model):
-    id: int
-    animals_allowed: bool
-    parties_allowed: bool
-    wifi: bool
-    swiming_pool: bool
-    grill: bool
 
     __tablename__ = 'extras'
 

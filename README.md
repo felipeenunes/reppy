@@ -21,6 +21,7 @@
 - Banco de dados limpo
 - Cliente de api REST (Insomnia, Postman, Thunder...)
 - Sua IDE preferida (VSCode, PyCharm...)
+- Um email da Google (email@gmail.com)
 
 ## Como usar
 
@@ -44,10 +45,12 @@
   `pip install -r requirements.txt`
 
 - Criar tabelas do database pelo flask:
-  `Flask db upgrade`
+  `flask db upgrade`
 
 - Rode o flask:
-  `Flask run`
+  `flask run`
+
+- Use seu cliente de requisições para interagir com as rotas
 
 ## DOCUMENTAÇÃO
 
@@ -59,6 +62,7 @@
 - Gustavo Prado Nunes
 - Luis Felipe Nunes
 - Natalia Cristine Almeida Nunes
+- Rodrigo Noschang
 
 ## Contato
 
@@ -66,4 +70,4 @@ Email: contatoreppy@gmail.com
 
 ## Termos de Uso
 
-Nosso trabalho é totalmente didático, sem fins lucrátivos. Não pode ser usado como fim lucrátivo.
+Esta aplicação foi desenvolvida para fins educativos.

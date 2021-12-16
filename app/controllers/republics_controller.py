@@ -51,7 +51,7 @@ def create_republic():
             "price": republic.price,
             "created_at": republic.created_at,
             "update_at": republic.updated_at,
-            "address_id": republic.address,
+            "address": republic.address,
             "pictures": pictures_list,
             "extras": list_extra
         }), 201
@@ -116,7 +116,7 @@ def update_republic(republic_id):
             "price": republic.price,
             "created_at": republic.created_at,
             "update_at": republic.updated_at,
-            "address_id": republic.address,
+            "address": republic.address,
             "pictures": republic.pictures,
             "extras": list_extras
         }), 201
@@ -158,7 +158,7 @@ def get_one(id: int):
         list_extra = get_extra_from_republic(republic.id)
     except IndexError:
         return {'Error': 'republic not found'}, 404
-    # return jsonify(republic)
+
     return jsonify({
             "id": republic.id,
             "user_email": republic.user_email,
@@ -169,7 +169,7 @@ def get_one(id: int):
             "price": republic.price,
             "created_at": republic.created_at,
             "update_at": republic.updated_at,
-            "address_id": republic.address,
+            "address": republic.address,
             "pictures": republic.pictures,
             "extras": list_extra
         }), 201

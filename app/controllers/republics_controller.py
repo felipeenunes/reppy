@@ -10,7 +10,7 @@ from datetime import datetime
 from flask_jwt_extended import jwt_required, get_jwt
 from app.models.user_model import UserModel
 from app import controllers
-from app.controllers.extra_controller import create_extra, update_extra, get_extra_from_republic
+from app.controllers.extra_controller import create_extra, filter_extras_true, update_extra, get_extra_from_republic
 
 
 @jwt_required(locations=["headers"])
@@ -72,8 +72,7 @@ def update_republic(republic_id):
     try: 
         republic = RepublicModel.query.get(republic_id)
         owner = UserModel.query.filter_by(email = republic.user_email).first()
-        
-
+    
         token_data = get_jwt()
         user_email = token_data['sub']['email']
     
@@ -104,8 +103,23 @@ def update_republic(republic_id):
         list_extras = ExtraModel.query.filter_by(republic_id=republic_id).first()
         if not list_extras:
             list_extras = []
+        else:
+            list_extras = filter_extras_true(list_extras)
 
-        return {}, 204
+        return jsonify({
+            "id": republic.id,
+            "user_email": republic.user_email,
+            "name": republic.name,
+            "description": republic.description,
+            "vacancies_qty": republic.vacancies_qty,
+            "max_occupancy": republic.max_occupancy,
+            "price": republic.price,
+            "created_at": republic.created_at,
+            "update_at": republic.updated_at,
+            "address_id": republic.address_id,
+            "pictures": republic.pictures,
+            "extras": list_extras
+        }), 201
 
     except BadRequestError as err:
         return jsonify({"error": err.msg}), err.code

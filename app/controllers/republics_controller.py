@@ -81,7 +81,7 @@ def update_republic(republic_id):
             return {"error": "only the owner can update the republic"}, 401
 
         update_data = request.json
-        keys = {"name":str, "description":str, "price":int, "vacancies_qty":int, "max_occupancy":int, "pictures":list, "address":dict}
+        keys = {"name":str, "description":str, "price":float, "vacancies_qty":int, "max_occupancy":int, "pictures":list, "address":dict}
         required_keys = {key:value for key,value in keys.items() if key in update_data}
  
         controllers.verification(update_data, required_keys)

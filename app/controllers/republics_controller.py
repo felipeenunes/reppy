@@ -58,7 +58,7 @@ def create_republic():
     except IntegrityError:
        return jsonify({"msg": "user not found"}), 400
     except BadRequestError as err:
-        return jsonify({"msg": str(err)}), err.code
+        return jsonify(err.msg), 400
     except TypeError:
         return {"msg": "invalid extra in request"}, 422
     except KeyError:

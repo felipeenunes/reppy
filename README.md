@@ -46,7 +46,7 @@
 
 ## DOCUMENTAÇÃO
 
-- Link: LINK
+- Link: https://reppy-doc.vercel.app/
 
 ## Desenvolvedores
 

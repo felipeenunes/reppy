@@ -49,3 +49,10 @@ def update_extra(update_data, updating_republic_id):
     updated_data_list = filter_extras_true(updated_data)
     
     return updated_data_list
+
+def get_extra_from_republic(specific_republic_id):
+    extras = ExtraModel.query.filter_by(republic_id = specific_republic_id).first()
+
+    extras = filter_extras_true(extras)
+
+    return extras

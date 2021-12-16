@@ -14,7 +14,13 @@ def verification(data,keys):
             if not key in data:
                 missing_keys.append(key)
             if (key in data) and (value != type(data[key])):
-                print(value,"macarrão", type(data[key]))
-                value_incorrect.append({"value correct":{key:value}, "past value":{key:type(data[key])}})
+                value = str(value).replace("<class ", "").replace(">", "")
+                inserted_type = type(data[key])
+                inserted_type = str(inserted_type).replace("<class ", "").replace(">", "")
+                raise BadRequestError({ "Invalid type for": key,
+                                        "Inserted type": inserted_type[1:-1], 
+                                        "correct type": value[1:-1]
+                                        })
     if missing_keys: raise BadRequestError(f'Required keys not found: {missing_keys}')
-    if value_incorrect: raise BadRequestError(f'Required correct values: {value_incorrect}')
+    if value_incorrect: raise BadRequestError(f'Invalid data type: {value_incorrect}')
+

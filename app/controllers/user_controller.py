@@ -1,5 +1,4 @@
 from flask import request, current_app, jsonify
-from sqlalchemy.orm import query
 from werkzeug.exceptions import NotFound
 from app.models.user_model import UserModel
 from app.controllers.address_controller import create_address,address_delete, update_adress

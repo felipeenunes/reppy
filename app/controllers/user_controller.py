@@ -62,14 +62,14 @@ def login_user():
         new_data['password'] = str(data['password'])
         if user.check_password(new_data['password']):
                 access_token = create_access_token(user)
-                return jsonify({'token': access_token}),200    
-        return jsonify({'Error':'Email and password incorrect'}),401
+                return jsonify({'token': access_token}), 200    
+        return jsonify({'Error':'Email and password incorrect'}), 401
     except ProgrammingError:
-        return jsonify({'error':'Email and password value must be string'}),422
+        return jsonify({'error':'Email and password value must be string'}), 422
     except NotFoundError as e:
             return jsonify({"error": e.msg}), e.code
     except TypeError:
-            return  jsonify({'error':'Email and password must be given only'}),400
+            return  jsonify({'error':'Email and password must be given only'}), 400
     except BadRequestError as e:
         return jsonify({"error": e.msg}), e.code
     except KeyErrorUser as e:

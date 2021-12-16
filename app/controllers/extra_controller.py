@@ -25,7 +25,6 @@ def complete_extras_with_false(extras):
 
     return extras
 
-
 @jwt_required(locations=["headers"])
 def create_extra(extras):
     extras = complete_extras_with_false(extras)

@@ -18,7 +18,7 @@ def create_republic():
     try:
         session = current_app.db.session
         data = request.get_json()
-        required_keys = {"name":str, "description":str, "price":int, "vacancies_qty":int, "max_occupancy":int, "pictures":list, "address":dict}
+        required_keys = {"name":str, "description":str, "price":float, "vacancies_qty":int, "max_occupancy":int, "pictures":list, "address":dict}
         controllers.verification(data, required_keys)
         user_token = get_jwt()
         user_email = user_token['sub']['email']

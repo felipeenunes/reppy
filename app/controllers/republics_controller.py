@@ -51,7 +51,7 @@ def create_republic():
             "price": republic.price,
             "created_at": republic.created_at,
             "update_at": republic.updated_at,
-            "address_id": republic.address_id,
+            "address_id": republic.address,
             "pictures": pictures_list,
             "extras": list_extra
         }), 201
@@ -116,7 +116,7 @@ def update_republic(republic_id):
             "price": republic.price,
             "created_at": republic.created_at,
             "update_at": republic.updated_at,
-            "address_id": republic.address_id,
+            "address_id": republic.address,
             "pictures": republic.pictures,
             "extras": list_extras
         }), 201
@@ -169,7 +169,7 @@ def get_one(id: int):
             "price": republic.price,
             "created_at": republic.created_at,
             "update_at": republic.updated_at,
-            "address_id": republic.address_id,
+            "address_id": republic.address,
             "pictures": republic.pictures,
             "extras": list_extra
         }), 201

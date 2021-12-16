@@ -1,21 +1,26 @@
-# REPPY
-
-    Este projeto é uma aplicação sem fins lucrativos e totalmente estudantil.
+  Aplicação desenvolvida como trabalho de conclusão do terceiro módulo (back-end) do curso de desenvolvimento fullstack da Kenzie Academy Brasil.
+  
 
 ## O Que é REPPY?
 
-    REPPY é uma aplicação voltada ao publico geral de estudantes, para quem procura compartilhar ou morar em alguma república.
+    Reppy é uma plataforma para o público estudantil que deseja procurar ou compartilhar moradias. 
 
-## Preview
+## Links
 
-- Heroku: https://capstone-reppy.herokuapp.com/
-- Front-End: https://gitlab.com/gustavopnunes/reppyf/
+- Demo Api: 
+    <br />https://capstone-reppy.herokuapp.com/
+- Demo Front-End: 
+    <br />https://gitlab.com/gustavopnunes/reppyf/
+- Repositório Front-End
+    <br />https://gitlab.com/gustavopnunes/reppyf
 
 ## Requisitos
 
-- Python Instalado v3
+- Python Instalado (versão 3 ou superior)
 - Psql Instalado
-- Criar database chamado reppy
+- Banco de dados limpo
+- Cliente de api REST (Insomnia, Postman, Thunder...)
+- Sua IDE preferida (VSCode, PyCharm...)
 
 ## Como usar
 
@@ -23,7 +28,7 @@
   `git clone git@gitlab.com:gustavopnunes/reppy.git`
 
 - Entre no repositório:
-  `cd repo`
+  `cd reppy`
 
 - Crie um ambiente virtual:
   `python -m venv venv`
@@ -33,7 +38,7 @@
 ![planos](https://i.imgur.com/JeEup8q.png?raw=true)
 
 - Ative o ambiente virtual:
-  `source venve/bin/activate`
+  `source venv/bin/activate`
 
 - Instale dependencias:
   `pip install -r requirements.txt`

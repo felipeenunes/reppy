@@ -57,7 +57,7 @@ class UserModel(db.Model):
 
     @validates('email')
     def validates_email(self,_,email):
-        regex = r"^[\w-]+@[a-z\d]+\.[\w]{3}"
+        regex = r"^[\w-]+@[a-z\d]+\.[\w]{3}(.br)?"
         match = re.fullmatch(regex,email)
         if not match:
             raise BadRequestWithDeleteError("Incorrect format, correct email format: user@email.com")

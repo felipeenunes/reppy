@@ -18,6 +18,7 @@ def create_republic():
     try:
         session = current_app.db.session
         data = request.get_json()
+        data["price"]= float(data["price"]) 
         required_keys = {"name":str, "description":str, "price":float, "vacancies_qty":int, "max_occupancy":int, "pictures":list, "address":dict}
         controllers.verification(data, required_keys)
         user_token = get_jwt()
@@ -25,7 +26,8 @@ def create_republic():
 
         user = UserModel.query.filter_by(email=user_email).first()
         data['user_email'] = user.email
-
+       
+        
         new_data = RepublicModel.verify_keys(data)
         pictures = new_data.pop('pictures')
         address = new_data.pop('address')

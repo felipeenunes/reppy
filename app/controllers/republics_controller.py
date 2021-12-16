@@ -105,20 +105,8 @@ def update_republic(republic_id):
         if not list_extras:
             list_extras = []
 
+        return {}, 204
 
-        return jsonify({
-            "id": republic.id,
-            "user_email": republic.user_email,
-            "name": republic.name,
-            "description": republic.description,
-            "vacancies_qty": republic.vacancies_qty,
-            "max_occupancy": republic.max_occupancy,
-            "price": republic.price,
-            "created_at": republic.created_at,
-            "update_at": republic.updated_at,
-            "address_id": republic.address_id,
-            "extras": list_extras
-        }), 201
     except BadRequestError as err:
         return jsonify({"error": err.msg}), err.code
     except InvalidRequestError:

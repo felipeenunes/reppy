@@ -38,7 +38,7 @@ def update_adress(address_data, address_id):
     updated_address = AddressModel.query.filter_by(id=address_id).update(address_data)
     current_app.db.session.commit()
 
-    return 
+    return
 
 
 def address_delete(address):

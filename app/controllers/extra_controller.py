@@ -1,8 +1,9 @@
 from app.models.extras_model import ExtraModel
-from flask import jsonify, request, current_app
+from flask import current_app
 from flask_jwt_extended import jwt_required
 
 def filter_extras_true(extras):
+    print(extras)
     extras = extras.__dict__
 
     if 'id' in extras: del extras['id']
@@ -24,7 +25,8 @@ def complete_extras_with_false(extras):
 
     return extras
 
-# @jwt_required(locations=["headers"])
+
+@jwt_required(locations=["headers"])
 def create_extra(extras):
     extras = complete_extras_with_false(extras)
 
@@ -37,7 +39,7 @@ def create_extra(extras):
     return new_extra_list
 
 
-# @jwt_required(locations=["headers"])
+@jwt_required(locations=["headers"])
 def update_extra(update_data, updating_republic_id):
     update_data = complete_extras_with_false(update_data)
 

@@ -3,6 +3,7 @@ from flask import request, current_app, jsonify
 from flask.json import jsonify
 from sqlalchemy.exc import IntegrityError, InvalidRequestError, StatementError
 from app.exc.exc import BadRequestError, NotFoundError
+from app.models.extras_model import ExtraModel
 from app.models.republic_model import RepublicModel
 from app.controllers.address_controller import create_address, update_adress
 from datetime import datetime
@@ -66,7 +67,6 @@ def create_republic():
         return {"msg": "extra element is not boolean"}, 422
 
 
-
 @jwt_required(locations=["headers"])
 def update_republic(republic_id):
     try: 
@@ -91,19 +91,21 @@ def update_republic(republic_id):
             new_address = update_data.pop('address')
             update_adress(new_address, republic.address.id)
 
+       
         if 'extras' in update_data:
             updated_extras = update_data.pop('extras')
-            list_extra = update_extra(updated_extras, republic.id)
-
+            list_extras = update_extra(updated_extras, republic.id)
 
         update_data['updated_at'] = datetime.now()
 
-        updated_republic = RepublicModel.query.filter_by(id = republic_id).update(update_data)
+        RepublicModel.query.filter_by(id = republic_id).update(update_data)
         current_app.db.session.commit()
 
-        updated_republic = RepublicModel.query.get(republic_id)
+        list_extras = ExtraModel.query.filter_by(republic_id=republic_id).first()
+        if not list_extras:
+            list_extras = []
 
-        # return jsonify(updated_republic), 200
+
         return jsonify({
             "id": republic.id,
             "user_email": republic.user_email,
@@ -115,8 +117,7 @@ def update_republic(republic_id):
             "created_at": republic.created_at,
             "update_at": republic.updated_at,
             "address_id": republic.address_id,
-            #"pictures": pictures_list,
-            "extras": list_extra
+            "extras": list_extras
         }), 201
     except BadRequestError as err:
         return jsonify({"error": err.msg}), err.code

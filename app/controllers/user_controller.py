@@ -99,18 +99,13 @@ def update_user():
                 if 'password' in data:
                      user.password = data['password']
                      output['password_hash'] = user.password_hash
-                for key, value in data.items():
-                        setattr(query,key,value)
                 if 'address' in data:
-                        output['adress'] = update_adress(data['address'], query)
-
-                user.query.filter_by(email=email_token['sub']['email']).update(output)
+                        update_adress(data['address'], user.address_id)
+                
+                UserModel.query.filter_by(email=email_token['sub']['email']).update(output)
                 current_app.db.session.commit()
-               
-                if 'password' in data:
-                        output.pop('password_hash')
-             
-                return jsonify(user), 202
+
+                return jsonify(), 204
         except BadRequestError as err:
                 return jsonify({"error": err.msg}), err.code
         except AttributeError:

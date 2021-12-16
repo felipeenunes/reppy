@@ -14,7 +14,6 @@ load_dotenv()
 @jwt_required(locations=["headers"])
 def send_email():
     
-    # configs e o carai a quatro
     mail = email.message.Message()
     mail["From"] = environ.get("EMAIL")
     password = environ.get("EMAIL_PASSWORD")
@@ -36,7 +35,6 @@ def send_email():
         
         republic_id = request.get_json()["republic_id"]
 
-        # email pro anunciante
         republic = RepublicModel.query.get(republic_id)
         owner_email = republic.user_email
         owner = UserModel.query.filter_by(email=owner_email).first()
@@ -62,8 +60,7 @@ def send_email():
         mail["To"] = owner_email
         mail.set_payload(msg)
         server.sendmail(mail["From"], [mail["To"]], mail.as_string().encode("utf-8"))
-      
-        # confirmacao pro interessado
+
         mail = email.message.Message()
         mail["From"] = environ.get("EMAIL")
         password = environ.get("EMAIL_PASSWORD")
@@ -91,4 +88,3 @@ def send_email():
         return {"msg": "email sent"}
     except SMTPRecipientsRefused:
         return {"msg": "error when sending email"}, 400
-

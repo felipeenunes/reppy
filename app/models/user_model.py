@@ -3,7 +3,7 @@ from app.configs.database import db
 from sqlalchemy.orm import validates
 import re
 from app.exc.exc import  BadRequestWithDeleteError
-from werkzeug.security import generate_password_hash,check_password_hash,gen_salt
+from werkzeug.security import generate_password_hash,check_password_hash
 from sqlalchemy.orm import backref
 from app.models.address_model import AddressModel
 

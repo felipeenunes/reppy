@@ -1,8 +1,9 @@
 from app.models.extras_model import ExtraModel
-from flask import jsonify, request, current_app
+from flask import current_app
 from flask_jwt_extended import jwt_required
 
 def filter_extras_true(extras):
+    print(extras)
     extras = extras.__dict__
 
     if 'id' in extras: del extras['id']

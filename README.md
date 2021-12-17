@@ -12,7 +12,7 @@
 - Demo Front-End (em construção):
     <br />https://reppy.vercel.app/
 - Repositório Front-End
-    <br />https://gitlab.com/gustavopnunes/reppyf
+    <br />https://github.com/gustavopnunes/reppy-front
 
 ## Requisitos
 

@@ -9,8 +9,8 @@
 
 - Demo Api: 
     <br />https://capstone-reppy.herokuapp.com/
-- Demo Front-End: 
-    <br />https://gitlab.com/gustavopnunes/reppyf/
+- Demo Front-End (em construção):
+    <br />https://reppy.vercel.app/
 - Repositório Front-End
     <br />https://gitlab.com/gustavopnunes/reppyf
 

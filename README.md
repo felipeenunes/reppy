@@ -36,7 +36,7 @@
 
 - Crie e edite um arquivo .env com as variáveis do .env.example
 
-![arquivo .env](https://i.imgur.com/JeEup8q.png?raw=true)
+![arquivo .env](https://i.imgur.com/OQJ0rM3.png)
 
 - Ative o ambiente virtual:
   `source venv/bin/activate`

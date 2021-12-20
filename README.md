@@ -36,7 +36,7 @@
 
 - Crie e edite um arquivo .env com as variáveis do .env.example
 
-![planos](https://i.imgur.com/JeEup8q.png?raw=true)
+![arquivo .env](https://i.imgur.com/JeEup8q.png?raw=true)
 
 - Ative o ambiente virtual:
   `source venv/bin/activate`
@@ -58,11 +58,25 @@
 
 ## Desenvolvedores
 
-- Priccila Lucem de Asiss Souza
+- Priccila Lucem de Assis Souza
+  - [Github](https://github.com/divinitysystem)
+  - [LinkedIn](https://www.linkedin.com/in/priccila-lucem)
+
 - Gustavo Prado Nunes
+  - [Github](https://github.com/gustavopnunes)
+  - [LinkedIn](https://www.linkedin.com/in/gustavopnunes)
+
 - Luis Felipe Nunes
+  - [Github](https://github.com/felipeenunes)
+  - [LinkedIn](https://www.linkedin.com/in/felipeenunes)
+
 - Natalia Cristine Almeida Nunes
+  - [Github](https://github.com/NataliaCristine)
+  - [LinkedIn](https://www.linkedin.com/in/nataliacristine-nunes)
+
 - Rodrigo Noschang
+  - [Github](https://github.com/rodrigon53)
+  - [LinkedIn](https://www.linkedin.com/in/rodrigo-noschang)
 
 ## Contato
 
